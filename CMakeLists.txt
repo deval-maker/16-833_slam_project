@@ -8,6 +8,7 @@ find_package(OpenCV REQUIRED)
 add_executable(proj
     src/main.cpp
     src/MapReader.cpp
+    src/node.cpp
 )
 
 set(CMAKE_BINARY_DIR "../bin")

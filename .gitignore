@@ -1,7 +1,7 @@
 build/*
 !build/keep.me
 bin/proj
-
+.vscode/
 # Prerequisites
 *.d
 
