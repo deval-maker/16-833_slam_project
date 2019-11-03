@@ -35,4 +35,5 @@ class Unique_Graph
     void create_adj_mat();
     int similarity( node& node1, node& node2);
     bool check_dist(node mode, node vertex);
+    node target_state(node mode);
 };
