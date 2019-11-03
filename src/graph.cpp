@@ -26,7 +26,7 @@ void Unique_Graph::sample_vertices()
         vertices.push_back(sample_node);
 
     }
-    
+
     return;
 }
 
@@ -47,7 +47,29 @@ void Unique_Graph::create_adj_mat()
                 adjacency_mat[vertices[i].id,vertices[j].id] = 0;
 
             }
-            
+
         }
     }
+}
+bool check_dist(node mode, node vertex)
+{
+  return pow(pow((mode.x - vertex.x),2) + pow(mode.y-vertex.y,2),1.0/2) < m_maxTargetDist;
+}
+
+node Unique_Graph::target_state(node mode)
+{
+  int similarity = 100;
+  node target_state;
+  for(int i=0;i<vertices.size();i++)
+  {
+    if(mode.id!=vertices[i].id && check_dist(mode,vertices[i]))
+    {
+      if(adjacency_mat[mode.id,vertices[i].id] < similarity)
+      {
+        similarity = adjacency_mat[mode.id,vertices[i].id];
+        target_state = vertices[i];
+      }
+    }
+  }
+  return target_state;
 }

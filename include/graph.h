@@ -14,13 +14,14 @@ class Unique_Graph
     int x_size;
     int y_size;
     std::vector<node> vertices;
-    std::vector<std::vector<double>> adjacency_mat; 
+    std::vector<std::vector<double>> adjacency_mat;
 
+    double m_maxTargetDist;
     Unique_Graph()
     {
 
     }
-    
+
     Unique_Graph(int num_vertices, int x_size, int y_size)
     {
         this->num_vertices = num_vertices;
@@ -33,5 +34,5 @@ class Unique_Graph
     void sample_vertices();
     void create_adj_mat();
     int similarity( node& node1, node& node2);
-    
+    bool check_dist(node mode, node vertex);
 };
