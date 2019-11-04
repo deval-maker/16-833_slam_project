@@ -25,6 +25,7 @@ void node::add_visible_landmarks(MapReader &map_obj)
     return;
 }
 
+
 int node::similarity(node &node1, node &node2)
 {
     int sim_count = 0;

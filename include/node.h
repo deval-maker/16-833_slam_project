@@ -1,3 +1,6 @@
+#pragma once
+
+
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,6 +9,7 @@
 #include <math.h>
 #include <functional>
 #include <bits/stdc++.h>
+#include <MapReader.h>
 
 class node
 {

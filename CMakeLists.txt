@@ -9,6 +9,8 @@ add_executable(proj
     src/main.cpp
     src/MapReader.cpp
     src/node.cpp
+    src/KDTree.cpp
+    src/graph.cpp
 )
 
 set(CMAKE_BINARY_DIR "../bin")
