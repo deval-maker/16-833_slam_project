@@ -22,7 +22,6 @@ void Unique_Graph::sample_vertices()
     for (int i=0; i< num_vertices; i++){
 
         node sample_node(i,x(),y(),theta());
-
         vertices.push_back(sample_node);
 
     }
