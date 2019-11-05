@@ -7,6 +7,7 @@
 #include <math.h>
 #include <functional>
 #include <node.h>
+#include <bits/stdc++.h>
 
 void Unique_Graph::sample_vertices()
 {
@@ -63,20 +64,38 @@ bool Unique_Graph::check_dist(node mode, node vertex)
   return pow(pow((mode.x - vertex.x),2) + pow(mode.y-vertex.y,2),1.0/2) < m_maxTargetDist;
 }
 
-node Unique_Graph::target_state(node mode)
+node Unique_Graph::target_state(node targetMode, std::vector<node> modes)
 {
-  int similarity = 100;
+
+  point_t targetModePoint{double(targetMode.x),double(targetMode.y),double(targetMode.theta)};
+  pointVec targetNeighborPoints = knn_tree.neighborhood_points(targetModePoint,m_maxTargetDist);
+
+  int minWeight = INT_MAX;
   node target_state;
-  for(int i=0;i<vertices.size();i++)
+
+  for(int i = 0; i < targetNeighborPoints.size();i++)
   {
-    if(mode.id!=vertices[i].id && check_dist(mode,vertices[i]))
+    node targetNeighbor = node_map[targetNeighborPoints[i]];
+    double weight = 0;
+    for(int j=0;j<modes.size();j++)
     {
-      if(adjacency_mat[mode.id][vertices[i].id] < similarity)
+      if(modes[j].id == targetMode.id) continue;
+      point_t otherModePoint{double(modes[j].x), double(modes[j].y), double(modes[j].theta)};
+      pointVec otherNeighborPoints = knn_tree.neighborhood_points(otherModePoint,m_maxTargetDist);
+
+      for(int k = 0; k<otherNeighborPoints.size();k++)
       {
-        similarity = adjacency_mat[mode.id][vertices[i].id];
-        target_state = vertices[i];
+        node otherNeighbor = node_map[otherNeighborPoints[k]];
+        weight+=adjacency_mat[otherNeighbor.id][targetNeighbor.id];
       }
+
+    }
+    if(weight < minWeight)
+    {
+      minWeight = weight;
+      target_state = targetNeighbor;
     }
   }
+
   return target_state;
 }

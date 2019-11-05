@@ -32,12 +32,12 @@ class Unique_Graph
     std::vector<node> vertices;
     pointVec points;
     KDTree knn_tree;
-    std::vector<std::vector<int>> adjacency_mat; 
+    std::vector<std::vector<int>> adjacency_mat;
     std::unordered_map<point_t,node,point_hasher> node_map;
     void sample_vertices();
 
     double m_maxTargetDist;
-    
+
     Unique_Graph()
     {
 
@@ -55,15 +55,15 @@ class Unique_Graph
 
         }
 
-        
+
     }
 
     private:
 
     vector<double> discrete_headings;
-    
+
     void create_adj_mat();
     static int similarity( node& node1, node& node2);
     bool check_dist(node mode, node vertex);
-    node target_state(node mode);
+    node target_state(node targetMode, std::vector<node> modes);
 };
