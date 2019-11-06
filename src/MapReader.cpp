@@ -68,7 +68,7 @@ float MapReader::query_map(int i, int j)
     if (i >= 8000 || j >= 8000 || i < 0 && j < 0)
     {
         cout << "[ Error ] Map query: " << i << " " << j << endl;
-        return 1;
+        return DBL_MAX;
     }
     else
     {

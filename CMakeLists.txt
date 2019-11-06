@@ -4,6 +4,8 @@ set (CMAKE_CXX_STANDARD 11)
 
 include_directories(include)
 find_package(OpenCV REQUIRED)
+find_package(Boost REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
 
 add_executable(proj
     src/main.cpp
@@ -11,6 +13,7 @@ add_executable(proj
     src/node.cpp
     src/KDTree.cpp
     src/graph.cpp
+    src/search.cpp
 )
 
 set(CMAKE_BINARY_DIR "../bin")
