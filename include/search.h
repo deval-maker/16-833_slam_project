@@ -13,8 +13,8 @@
 
 struct SearchNode
 {
-    double x;
-    double y;
+    int x;
+    int y;
     double g;
     double h;
     double f;
@@ -54,22 +54,23 @@ class Search
   std::unordered_map<std::size_t, SearchNode*> openMap;
   std::unordered_set<std::size_t> closedSet;
   std::priority_queue<SearchNode*, std::vector<SearchNode*>, CompareNode> m_openList;
-
   int m_weight = 1;
-  void set_start(point_t startPoint);
-  void set_goal(point_t goalPoint);
   double computePriority(SearchNode* node);
   double computeHeuristic(SearchNode* node);
-  std::vector<point_t> plan();
   bool isGoal(SearchNode* node);
   void expand(SearchNode* node);
-  std::size_t getHash(double node_x, double node_y);
+  std::size_t getHash(int node_x, int node_y);
   std::size_t getHash(SearchNode node);
-  SearchNode* getNode(double succ_x, double succ_y, std::size_t Hash);
-  SearchNode* createNode(double x, double y);
+  SearchNode* getNode(int succ_x, int succ_y, std::size_t Hash);
+  SearchNode* createNode(int x, int y);
   std::vector<point_t> computePath(SearchNode* goal);
-  bool validSucc(double succ_x, double succ_y);
-  Search();
+  bool validSucc(int succ_x, int succ_y);
   void set_mapReader(MapReader* mapReader);
+  void printOpen();
+public:
+  Search();
+  void set_start(point_t startPoint);
+  void set_goal(point_t goalPoint);
+  std::vector<point_t> plan();
 
 };

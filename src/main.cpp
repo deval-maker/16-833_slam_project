@@ -24,5 +24,20 @@ int main()
 
     auto near_node = unq_graph->node_map[pt];
 
+    Search search;
+    point_t start{1,1};
+    point_t goal{10,10};
+    search.set_start(start);
+    search.set_goal(goal);
 
+    std::vector<point_t> path = search.plan();
+    std::cout<<"Path \n";
+    for(int i=0;i<path.size();i++)
+    {
+      for(int j=0;j<path[i].size();j++)
+      {
+        std::cout<<path[i][j]<<' ';
+      }
+      std::cout<<'\n';
+    }
 }

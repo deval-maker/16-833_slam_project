@@ -31,6 +31,7 @@ Search::Search()
 
   m_start = new SearchNode;
   m_goal = new SearchNode;
+  m_numActions = 8;
 }
 
 
@@ -87,9 +88,9 @@ std::vector<point_t> Search::computePath(SearchNode* goal)
 {
   SearchNode* curr = goal;
   std::vector<point_t> path;
-  point_t state;
   while(curr!=NULL)
   {
+    point_t state;
     state.push_back(curr->x);
     state.push_back(curr->y);
     path.push_back(state);
@@ -107,7 +108,7 @@ std::size_t Search::getHash(SearchNode node)
   return seed;
 }
 
-std::size_t Search::getHash(double node_x, double node_y)
+std::size_t Search::getHash(int node_x, int node_y)
 {
   std::size_t seed = 0;
   boost::hash_combine(seed,node_x);
@@ -116,7 +117,7 @@ std::size_t Search::getHash(double node_x, double node_y)
   return seed;
 }
 
-SearchNode* Search::createNode(double x, double y)
+SearchNode* Search::createNode(int x, int y)
 {
   SearchNode* node = new SearchNode(x,y);
   node->h = computeHeuristic(node);
@@ -124,10 +125,10 @@ SearchNode* Search::createNode(double x, double y)
   return node;
 }
 
-SearchNode* Search::getNode(double x, double y, std::size_t Hash)
+SearchNode* Search::getNode(int x, int y, std::size_t Hash)
 {
   SearchNode* succ;
-  if(openMap.find(Hash) == openMap.end())
+  if(openMap.find(Hash) != openMap.end())
   {
     succ = openMap[Hash];
   }
@@ -138,7 +139,7 @@ SearchNode* Search::getNode(double x, double y, std::size_t Hash)
   }
   return succ;
 }
-bool Search::validSucc(double x, double y)
+bool Search::validSucc(int x, int y)
 {
   double value = m_mapReader->query_map(int(x),int(y));
   if(value >= 255) return false;
@@ -149,21 +150,25 @@ void Search::expand(SearchNode* parent)
 {
   for(int i = 0; i<m_numActions; i++)
   {
-    double succ_x = parent->x + m_actions[i][0];
-    double succ_y = parent->y + m_actions[i][1];
-    if(!validSucc(succ_x,succ_y)) continue;
+    int succ_x = parent->x + m_actions[i][0];
+    int succ_y = parent->y + m_actions[i][1];
+
+    // if(!validSucc(succ_x,succ_y)) continue;
+
     std::size_t succHash = getHash(succ_x,succ_y);
     if(closedSet.find(succHash) != closedSet.end()) continue;
 
     SearchNode* succ = getNode(succ_x, succ_y, succHash);
-
     double new_g = parent->g + m_action_cost[i];
     if(new_g < succ->g)
     {
       succ->g = new_g;
+      succ->f = computePriority(succ);
       succ->parent = parent;
+      m_openList.push(succ);
     }
 
   }
+
   closedSet.insert(getHash(*parent));
 }
