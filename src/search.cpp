@@ -75,6 +75,7 @@ std::vector<point_t> Search::plan()
       return computePath(topNode);
     }
     expand(topNode);
+    printOpen();
     m_openList.pop();
   }
 }
@@ -171,4 +172,15 @@ void Search::expand(SearchNode* parent)
   }
 
   closedSet.insert(getHash(*parent));
+}
+
+void Search::printOpen()
+{
+  std::priority_queue<SearchNode*, std::vector<SearchNode*>, CompareNode> copy = m_openList;
+  for(int i=0;i<copy.size();i++)
+  {
+    SearchNode* node = copy.top();
+    std::cout<<node->x<<" "<<node->y<<" F val "<<node->f<<'\n';
+    copy.pop();
+  }
 }
