@@ -25,7 +25,7 @@ int main()
     auto near_node = unq_graph->node_map[pt];
 
     Search search;
-    point_t start{1,1};
+    point_t start{1,4};
     point_t goal{10,10};
     search.set_start(start);
     search.set_goal(goal);

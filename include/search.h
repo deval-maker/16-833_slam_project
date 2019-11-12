@@ -39,7 +39,7 @@ struct SearchNode
 struct CompareNode {
     bool operator()(SearchNode* const& n1, SearchNode* const& n2)
     {
-        return n1->f < n2->f;
+        return n1->f > n2->f;
     }
 };
 

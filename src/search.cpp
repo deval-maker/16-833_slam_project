@@ -15,10 +15,10 @@ Search::Search()
   m_actions[2][0] = 1; m_actions[2][1] = 0;
   m_actions[3][0] = -1; m_actions[3][1] = 0;
 
-  m_actions[4][1] = 1; m_actions[4][1] = 1;
-  m_actions[5][1] = -1; m_actions[5][1] = -1;
-  m_actions[6][1] = 1; m_actions[6][1] = -1;
-  m_actions[7][1] = -1; m_actions[7][1] = 1;
+  m_actions[4][0] = 1; m_actions[4][1] = 1;
+  m_actions[5][0] = -1; m_actions[5][1] = -1;
+  m_actions[6][0] = 1; m_actions[6][1] = -1;
+  m_actions[7][0] = -1; m_actions[7][1] = 1;
 
   m_action_cost[0] = 1;
   m_action_cost[1] = 1;
@@ -75,8 +75,7 @@ std::vector<point_t> Search::plan()
       return computePath(topNode);
     }
     expand(topNode);
-    printOpen();
-    m_openList.pop();
+    // printOpen();
   }
 }
 
@@ -149,15 +148,18 @@ bool Search::validSucc(int x, int y)
 
 void Search::expand(SearchNode* parent)
 {
+  std::cout<<"Expanding "<<parent->x<<" "<<parent->y<<'\n';
+  m_openList.pop();
   for(int i = 0; i<m_numActions; i++)
   {
     int succ_x = parent->x + m_actions[i][0];
     int succ_y = parent->y + m_actions[i][1];
 
     // if(!validSucc(succ_x,succ_y)) continue;
-
+    // std::cout<<"Successors "<<succ_x<<' '<<succ_y<<'\n';
     std::size_t succHash = getHash(succ_x,succ_y);
     if(closedSet.find(succHash) != closedSet.end()) continue;
+
 
     SearchNode* succ = getNode(succ_x, succ_y, succHash);
     double new_g = parent->g + m_action_cost[i];
@@ -170,17 +172,19 @@ void Search::expand(SearchNode* parent)
     }
 
   }
-
+  // std::cout<<"size of open list "<<m_openList.size()<<'\n';
   closedSet.insert(getHash(*parent));
 }
 
 void Search::printOpen()
 {
   std::priority_queue<SearchNode*, std::vector<SearchNode*>, CompareNode> copy = m_openList;
-  for(int i=0;i<copy.size();i++)
+  std::cout<<"\n Open list size "<<copy.size()<< "\n";
+  while(!copy.empty())
   {
     SearchNode* node = copy.top();
     std::cout<<node->x<<" "<<node->y<<" F val "<<node->f<<'\n';
     copy.pop();
   }
+  int pause = std::cin.get();
 }
