@@ -8,12 +8,13 @@ find_package(Boost REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 add_executable(proj
+    src/node.cpp
     src/main.cpp
     src/MapReader.cpp
-    src/node.cpp
     src/KDTree.cpp
     src/graph.cpp
     src/search.cpp
+    src/test.cpp
 )
 
 set(CMAKE_BINARY_DIR "../bin")

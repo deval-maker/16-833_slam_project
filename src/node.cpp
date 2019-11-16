@@ -6,10 +6,9 @@
 #include <math.h>
 #include <functional>
 #include <node.h>
-#include <MapReader.h>
 
 
-node::node(int id, int x, int y, int theta)
+node::node(int id, int x, int y, double theta)
 {
     this->id = id;
     this->x = x;
@@ -17,14 +16,6 @@ node::node(int id, int x, int y, int theta)
     this->theta = theta;
     
 }
-
-void node::add_visible_landmarks(MapReader &map_obj)
-{
-
-    
-    return;
-}
-
 
 int node::similarity(node &node1, node &node2)
 {

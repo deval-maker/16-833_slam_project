@@ -1,27 +1,26 @@
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <vector>
-#include <random>
-#include <math.h>
-#include <functional>
+#include <utils.h>
 #include <node.h>
 #include <graph.h>
-#include <memory>
 #include <search.h>
-#include "MapReader.h"
+#include <MapReader.h>
+
+#include <test.h>
 
 using namespace std;
 
+bool test = true;
+
 int main()
 {
-    std::cout << "Hello Project!" << std::endl;
-
+    if(test)
+    {
+      test_raycast1();
+      test_raycast2();
+    }
+    
     String map_path = "data/map1.txt";
-
     MapReader map_obj = MapReader(map_path);
-    map_obj.visualize_map();
-
+ 
     std::shared_ptr<Unique_Graph> unq_graph = std::make_shared<Unique_Graph>(100,200,200,32);
 
     unq_graph->sample_vertices();

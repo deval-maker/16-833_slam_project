@@ -1,15 +1,6 @@
 #pragma once
 
-
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <vector>
-#include <random>
-#include <math.h>
-#include <functional>
-#include <bits/stdc++.h>
-#include <MapReader.h>
+#include <utils.h>
 
 class node
 {
@@ -17,7 +8,7 @@ class node
     int id;
     int x;
     int y;
-    int theta;
+    double theta;
     std::unordered_set<int> visible_landmarks;
 
     node()
@@ -25,9 +16,8 @@ class node
 
     }
 
-    node(int id, int x, int y, int theta);
+    node(int id, int x, int y, double theta);
     
-    void add_visible_landmarks(MapReader &map_obj);
     static int similarity(node &node1, node &node2);
     
 };
