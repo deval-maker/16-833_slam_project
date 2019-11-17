@@ -1,4 +1,4 @@
-#include "MapReader.h"
+#include <MapReader.h>
 
 MapReader::MapReader(string src_path_map)
 {

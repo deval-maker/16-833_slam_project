@@ -1,13 +1,5 @@
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <vector>
+
 #include <graph.h>
-#include <random>
-#include <math.h>
-#include <functional>
-#include <node.h>
-#include <bits/stdc++.h>
 
 void Unique_Graph::sample_vertices()
 {

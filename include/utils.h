@@ -13,7 +13,9 @@
 #include <functional>
 #include <bits/stdc++.h>
 #include <memory>
-
+#include <KDTree.hpp>
+#include <queue>
+#include <boost/functional/hash.hpp>
 #include <opencv2/opencv.hpp>
 
 using namespace cv;

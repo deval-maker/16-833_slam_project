@@ -1,16 +1,6 @@
 #pragma once
 
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <vector>
-#include <random>
-#include <math.h>
-#include <functional>
-#include <bits/stdc++.h>
-#include <KDTree.hpp>
-#include <queue>
-#include <boost/functional/hash.hpp>
+#include "utils.h"
 #include <MapReader.h>
 
 struct SearchNode

@@ -1,7 +1,4 @@
-#include "test.h"
-
-#include "MapReader.h"
-
+#include <test.h>
 
 void test_raycast1()
 {

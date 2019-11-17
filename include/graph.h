@@ -1,17 +1,7 @@
 #pragma once
 
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <vector>
-#include <random>
-#include <math.h>
-#include <functional>
+#include <utils.h>
 #include <node.h>
-#include <KDTree.hpp>
-#include <bits/stdc++.h>
-
-
 
 class point_hasher{
     public:
