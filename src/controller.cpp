@@ -8,6 +8,8 @@ Controller::Controller()
     prev_state = current_state;
 
     last_ts = std::chrono::high_resolution_clock::now();
+
+    cout << "[Controller] Drive type: " << drive_type << endl;
 }
 
 Controller::~Controller()
@@ -50,15 +52,54 @@ bool Controller::is_goal_reached()
     }
 }
 
+void Controller::threshold_max_control_sig()
+{
+    // Set maximum
+    if(fabs(control_sig.linx) >= vel_max_thresh.linx)
+    {
+        control_sig.linx = vel_max_thresh.linx;
+    }
+    
+    if(fabs(control_sig.liny) >= vel_max_thresh.liny)
+    {
+        control_sig.liny = vel_max_thresh.liny;
+    }
+    
+    if(fabs(control_sig.ang) >= vel_max_thresh.ang)
+    {
+        control_sig.ang = vel_max_thresh.ang;
+    }
+}
+
+void Controller::threshold_min_control_sig()
+{
+    // Set minimum
+    if(fabs(control_sig.linx) <= vel_min_thresh.linx)
+    {
+        control_sig.linx = vel_min_thresh.linx;
+    }
+    
+    if(fabs(control_sig.liny) <= vel_min_thresh.liny)
+    {
+        control_sig.liny = vel_min_thresh.liny;
+    }
+
+    if(fabs(control_sig.ang) >= vel_min_thresh.ang)
+    {
+        control_sig.ang = vel_min_thresh.ang;
+    }
+
+}
+
 bool Controller::next_time_step()
 {
     error.x = goal.x - current_state.x;
     error.y = goal.y - current_state.y;
     error.theta = goal.theta - current_state.theta;
 
-    cout << "[Error] " << error.toStr() << endl;
-    cout << "[Current state] " << current_state.toStr() << endl;
-    cout << "[Prev state] " << prev_state.toStr() << endl;
+    // cout << "[Error] " << error.toStr() << endl;
+    // cout << "[Current state] " << current_state.toStr() << endl;
+    // cout << "[Prev state] " << prev_state.toStr() << endl;
 
     auto now_ts = std::chrono::high_resolution_clock::now();
     double dt = std::chrono::duration<double>(now_ts - last_ts).count();
@@ -68,51 +109,42 @@ bool Controller::next_time_step()
     if(!is_at_goal)
     {
 
-        // Vel desired
-        desired_vel.lin = sqrt( pow((error.x / dt),2)  + pow((error.y / dt),2) );
-        desired_vel.ang = error.theta / dt;
-
-        cout << "[Desired Velo] " << desired_vel.toStr() << endl;
-
-
-        // Get current velocities
-        current_vel.lin = sqrt( pow(( (current_state.x - prev_state.x) / dt),2)  + pow(((current_state.y - prev_state.y) / dt),2) );
-        current_vel.ang = (current_state.theta - prev_state.theta) / dt;
-
-        cout << "[Current Velo] " << current_vel.toStr() << endl;
-
-
-        // Control Signal
-        control_sig.lin = (desired_vel.lin - current_vel.lin) * Kp_l;
-        control_sig.ang = (desired_vel.ang - current_vel.ang) * Kp_o;
-
-        cout << "[Control Signal] " << control_sig.toStr() << endl;
-
-        // Set minimum
-        if(fabs(control_sig.lin) <= vel_min_thresh.lin)
+        if(Steer == drive_type)
         {
-            control_sig.lin = vel_min_thresh.lin;
+            // Vel desired
+            desired_vel.linx = sqrt( pow((error.x / dt),2)  + pow((error.y / dt),2) );
+            desired_vel.ang = error.theta / dt;
+            // cout << "[Desired Velo] " << desired_vel.toStr() << endl;
+
+
+            // Get current velocities
+            current_vel.linx = sqrt( pow(( (current_state.x - prev_state.x) / dt),2)  + pow(((current_state.y - prev_state.y) / dt),2) );
+            current_vel.ang = (current_state.theta - prev_state.theta) / dt;
+            // cout << "[Current Velo] " << current_vel.toStr() << endl;
+
+
+            // Control Signal
+            control_sig.linx = (desired_vel.linx - current_vel.linx) * Kp_lx;
+            control_sig.ang = (desired_vel.ang - current_vel.ang) * Kp_a;
+            // cout << "[Control Signal] " << control_sig.toStr() << endl;
+
         }
+        else if(Omni == drive_type)
+        {
+
+        }
+        else
+        {
+            cout << "[Critical] Invalid drive type !" <<  endl;
+        }
+
+        threshold_min_control_sig();
+        threshold_max_control_sig();
         
-        if(fabs(control_sig.ang) >= vel_min_thresh.ang)
-        {
-            control_sig.ang = vel_min_thresh.ang;
-        }
-
-        // Set maximum
-        if(fabs(control_sig.lin) >= vel_max_thresh.lin)
-        {
-            control_sig.lin = vel_max_thresh.lin;
-        }
-        
-        if(fabs(control_sig.ang) >= vel_max_thresh.ang)
-        {
-            control_sig.ang = vel_max_thresh.ang;
-        }
     }
     else
     {
-        control_sig.lin = 0.0;
+        control_sig.linx = 0.0;
         control_sig.ang = 0.0;
         cout << "[Controller] Goal reached." << endl;
     }
@@ -120,9 +152,20 @@ bool Controller::next_time_step()
     prev_state = current_state;
 
     // Motion Model 
-    current_state.x += ( control_sig.lin * dt * cos(current_state.theta));
-    current_state.y += ( control_sig.lin * dt * sin(current_state.theta));
-    current_state.theta += ( control_sig.ang * dt);
+    if(Steer == drive_type)
+    {
+        current_state.x += ( control_sig.linx * dt * cos(current_state.theta));
+        current_state.y += ( control_sig.linx * dt * sin(current_state.theta));
+        current_state.theta += ( control_sig.ang * dt);
+    }
+    else if(Omni == drive_type)
+    {
+
+    }
+    else
+    {
+        cout << "[Critical] Invalid drive type !" << endl;
+    }
 
     // Add Noise
     // TODO:

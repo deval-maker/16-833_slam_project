@@ -39,6 +39,9 @@ void test_controller1()
 
     bool is_goal_reached = false;
     
+    auto start = std::chrono::high_resolution_clock::now();
+    double time_elapsed = 0.0;
+
     while(!is_goal_reached)
     {
         is_goal_reached = c1.next_time_step();
@@ -46,6 +49,21 @@ void test_controller1()
         // Sleep for 100ms 
         std::chrono::duration<int, std::milli> sleep_time(100);
         std::this_thread::sleep_for(sleep_time);
+
+        time_elapsed = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - start).count();
+        if(time_elapsed > 5.0)
+        {
+            break;
+        }
+    }
+
+    if(is_goal_reached)
+    {
+        cout << "[Controller 1] Test Passed !" << " Total time: " << time_elapsed << endl;
+    }
+    else
+    {
+        cout << "[Controller 1] Test Failed !" << endl;
     }
 }
 
@@ -58,6 +76,9 @@ void test_controller2()
 
     bool is_goal_reached = false;
     
+    auto start = std::chrono::high_resolution_clock::now();
+    double time_elapsed = 0.0;
+    
     while(!is_goal_reached)
     {
         is_goal_reached = c1.next_time_step();
@@ -65,6 +86,21 @@ void test_controller2()
         // Sleep for 100ms 
         std::chrono::duration<int, std::milli> sleep_time(100);
         std::this_thread::sleep_for(sleep_time);
+
+        time_elapsed = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - start).count();
+        if(time_elapsed > 5.0)
+        {
+            break;
+        }
+    }
+
+    if(is_goal_reached)
+    {
+        cout << "[Controller 2] Test Passed !" << " Total time: " << time_elapsed << endl;
+    }
+    else
+    {
+        cout << "[Controller 2] Test Failed !" << endl;
     }
 }
 

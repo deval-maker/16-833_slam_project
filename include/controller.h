@@ -5,24 +5,27 @@
 class velocities
 {
 public:
-    double lin;
+    double linx;
+    double liny;
     double ang;
 
     velocities()
     {
-        lin = 0.0;
+        linx = 0.0;
+        liny = 0.0;
         ang = 0.0;
     }
 
-    velocities(double _lin, double _ang)
+    velocities(double _linx, double _liny, double _ang)
     {
-        lin = _lin;
+        linx = _linx;
+        liny = _liny;
         ang = _ang;
     }
 
     string toStr()
     {
-        return  "linear velo: " + to_string(lin) + " angular velo: " +  to_string(ang);
+        return  "linear velo X: " + to_string(linx) + " linear velo Y: " + to_string(liny) +  " angular velo: " +  to_string(ang);
     }
 };
 
@@ -67,24 +70,38 @@ private:
     velocities desired_vel;
     velocities current_vel;
 
-    double Kp_l = 1;
-    double Kp_o = 10;
+    double Kp_lx = 1;
+    double Kp_ly = 1;
+    double Kp_a = 1;
+
+    double Kd_lx = 0;
+    double Kd_ly = 0;
+    double Kd_a = 0;
 
     bool is_goal_reached();
-
+    void threshold_max_control_sig();
+    void threshold_min_control_sig();
+    
 public:
     
-    state_vector goal_thresh = state_vector(0.5, 0.5, (2*PI)/180.0);
-    velocities vel_max_thresh = velocities(2, 10); // 2m/s and 1rad/s
-    velocities vel_min_thresh = velocities(0.1, 0.01); // 2m/s and 1rad/s
+    enum drive_type_e
+    {
+        Steer, 
+        Omni
+    };
 
+    state_vector goal_thresh = state_vector(0.5, 0.5, (2*PI)/180.0);
+    velocities vel_max_thresh = velocities(2.0, 2.0, 1.0); // 2m/s and 1rad/s
+    velocities vel_min_thresh = velocities(0.1, 0.1, 0.01); // 2m/s and 1rad/s
 
     state_vector current_state; 
-    
+    drive_type_e drive_type = Steer;
+
     Controller();
     ~Controller();
 
     void set_goal(double x, double y, double theta);
     void set_current_state(double x, double y, double theta);
     bool next_time_step();
+
 };
