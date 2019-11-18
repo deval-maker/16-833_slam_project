@@ -11,3 +11,5 @@ void test_controller1();
 void test_controller2();
 void test_controller3();
 void test_controller4();
+
+void test_map_and_controller();

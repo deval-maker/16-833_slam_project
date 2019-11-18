@@ -40,6 +40,24 @@ void Controller::set_current_state(double x, double y, double theta)
     cout << "[Set current state] " << current_state.toStr() << endl;
 }
 
+void Controller::set_current_state(node n1)
+{
+    current_state.x = (double) n1.x;
+    current_state.y = (double) n1.y;
+    current_state.theta = (double) n1.theta;
+
+    prev_state = current_state;
+
+    cout << "[Set current state] " << current_state.toStr() << endl;
+}
+
+void Controller::set_node_state(node &n1)
+{
+    n1.x = (int)current_state.x;
+    n1.y = (int)current_state.y;
+    n1.theta = current_state.theta;
+}
+
 bool Controller::is_goal_reached()
 {
     if(fabs(error.x) <= goal_thresh.x && fabs(error.y) <= goal_thresh.y && fabs(error.theta) <= goal_thresh.theta)// 0.9 for x and y, 2 degrees for theta

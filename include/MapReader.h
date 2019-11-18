@@ -11,7 +11,7 @@ class MapReader
 
 private:
     int total_landmarks = 10;
-    static const int stepsize = 1;
+    static const int stepsize = 4;
     double delta_theta = stepsize * PI/180.0;
     float delta_dist = 1.0;
     float laser_fov = 360;
@@ -29,7 +29,7 @@ public:
     uint8_t query_map(int i, int j);
     uint8_t* get_map(void);
 
-    void update_visible_landmarks(node *, bool);
+    void update_visible_landmarks(node &, bool);
     double correct_range(double angle);
     float toRadian(float degree);
 

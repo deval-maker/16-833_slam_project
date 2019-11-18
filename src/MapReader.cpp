@@ -63,17 +63,19 @@ float MapReader::toRadian(float degree)
     return (degree*PI)/180;
 }
 
-void MapReader::update_visible_landmarks(node *x_t, bool visualize)
+void MapReader::update_visible_landmarks(node &x_t, bool visualize)
 {
-    double curr_orient = x_t->theta;
+    double curr_orient = x_t.theta;
     curr_orient = correct_range(curr_orient);
 
     double start = curr_orient - toRadian(laser_fov/2);
     start = correct_range(start);
 
-    double robox = x_t->x;
-    double roboy = x_t->y;
+    double robox = x_t.x;
+    double roboy = x_t.y;
     double angle = 0.0;
+
+    x_t.visible_landmarks.clear();
 
     // cout << "Ray casting loop \n";
 
@@ -103,7 +105,7 @@ void MapReader::update_visible_landmarks(node *x_t, bool visualize)
                 if(hit_point != 0)
                 {
                     // Add to the list of visible landmarks 
-                    x_t->visible_landmarks.insert(hit_point);
+                    x_t.visible_landmarks.insert(hit_point);
                 }
 
                 break;
@@ -138,7 +140,7 @@ void MapReader::update_visible_landmarks(node *x_t, bool visualize)
         }
 
         cv::imshow("SLAM Project", A);
-        cv::waitKey(0);
+        cv::waitKey(10);
     }
 
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utils.h>
+#include <node.h>
 
 class velocities
 {
@@ -70,8 +71,8 @@ private:
     velocities desired_vel;
     velocities current_vel;
 
-    double Kp_lx = 1;
-    double Kp_ly = 1;
+    double Kp_lx = 0.8;
+    double Kp_ly = 0.8;
     double Kp_a = 0.8;
 
     double Kd_lx = 0;
@@ -90,8 +91,8 @@ public:
         Omni
     };
 
-    state_vector goal_thresh = state_vector(0.5, 0.5, (2*PI)/180.0);
-    velocities vel_max_thresh = velocities(2.0, 2.0, 1.5);
+    state_vector goal_thresh = state_vector(0.35, 0.35, (2*PI)/180.0);
+    velocities vel_max_thresh = velocities(15.0, 15.0, 1.5);
     velocities vel_min_thresh = velocities(0.1, 0.1, 0.01);
 
     state_vector current_state; 
@@ -102,6 +103,8 @@ public:
 
     void set_goal(double x, double y, double theta);
     void set_current_state(double x, double y, double theta);
+    void set_node_state(node &n1);
+    void set_current_state(node);
     bool next_time_step();
 
 };
