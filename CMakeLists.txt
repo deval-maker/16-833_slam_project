@@ -15,6 +15,7 @@ add_executable(proj
     src/graph.cpp
     src/search.cpp
     src/test.cpp
+    src/controller.cpp
 )
 
 set(CMAKE_BINARY_DIR "../bin")

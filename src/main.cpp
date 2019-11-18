@@ -15,6 +15,9 @@ int main()
     {
       test_raycast1();
       test_raycast2();
+
+      test_controller1();
+      test_controller2();
     }
     
     String map_path = "data/map1.txt";

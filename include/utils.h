@@ -17,6 +17,9 @@
 #include <queue>
 #include <boost/functional/hash.hpp>
 #include <opencv2/opencv.hpp>
+#include <chrono>
+#include <thread>
+#include <ctime>
 
 using namespace cv;
 using namespace std;
