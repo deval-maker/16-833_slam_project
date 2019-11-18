@@ -72,7 +72,7 @@ private:
 
     double Kp_lx = 1;
     double Kp_ly = 1;
-    double Kp_a = 1;
+    double Kp_a = 0.8;
 
     double Kd_lx = 0;
     double Kd_ly = 0;
@@ -91,11 +91,11 @@ public:
     };
 
     state_vector goal_thresh = state_vector(0.5, 0.5, (2*PI)/180.0);
-    velocities vel_max_thresh = velocities(2.0, 2.0, 1.0); // 2m/s and 1rad/s
-    velocities vel_min_thresh = velocities(0.1, 0.1, 0.01); // 2m/s and 1rad/s
+    velocities vel_max_thresh = velocities(2.0, 2.0, 1.5);
+    velocities vel_min_thresh = velocities(0.1, 0.1, 0.01);
 
     state_vector current_state; 
-    drive_type_e drive_type = Steer;
+    drive_type_e drive_type = Omni;
 
     Controller();
     ~Controller();

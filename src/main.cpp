@@ -18,6 +18,8 @@ int main()
 
       test_controller1();
       test_controller2();
+      test_controller3();
+      test_controller4();
     }
     
     String map_path = "data/map1.txt";

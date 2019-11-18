@@ -57,17 +57,38 @@ void Controller::threshold_max_control_sig()
     // Set maximum
     if(fabs(control_sig.linx) >= vel_max_thresh.linx)
     {
-        control_sig.linx = vel_max_thresh.linx;
+        if(control_sig.linx >= 0)
+        {   
+            control_sig.linx = vel_max_thresh.linx;
+        }
+        else
+        {
+            control_sig.linx = -vel_max_thresh.linx;
+        }
     }
     
     if(fabs(control_sig.liny) >= vel_max_thresh.liny)
     {
-        control_sig.liny = vel_max_thresh.liny;
+        if(control_sig.liny >= 0)
+        {
+            control_sig.liny = vel_max_thresh.liny;
+        }
+        else
+        {
+            control_sig.liny = -vel_max_thresh.liny;
+        }
     }
     
     if(fabs(control_sig.ang) >= vel_max_thresh.ang)
     {
-        control_sig.ang = vel_max_thresh.ang;
+        if(control_sig.ang >= 0)
+        {
+            control_sig.ang = vel_max_thresh.ang;
+        }
+        else
+        {
+            control_sig.ang = -vel_max_thresh.ang;
+        }
     }
 }
 
@@ -76,19 +97,39 @@ void Controller::threshold_min_control_sig()
     // Set minimum
     if(fabs(control_sig.linx) <= vel_min_thresh.linx)
     {
-        control_sig.linx = vel_min_thresh.linx;
+        if(control_sig.linx >= 0.0)
+        {
+            control_sig.linx = vel_min_thresh.linx;
+        }
+        else
+        {
+            control_sig.linx = -vel_min_thresh.linx;
+        } 
     }
     
     if(fabs(control_sig.liny) <= vel_min_thresh.liny)
     {
-        control_sig.liny = vel_min_thresh.liny;
+        if(control_sig.liny >= 0)
+        {
+            control_sig.liny = vel_min_thresh.liny;
+        }
+        else
+        {
+            control_sig.liny = -vel_min_thresh.liny;
+        }
     }
 
-    if(fabs(control_sig.ang) >= vel_min_thresh.ang)
+    if(fabs(control_sig.ang) <= vel_min_thresh.ang)
     {
-        control_sig.ang = vel_min_thresh.ang;
+        if(control_sig.ang >= 0)
+        {
+            control_sig.ang = vel_min_thresh.ang;
+        }
+        else
+        {
+            control_sig.ang = -vel_min_thresh.ang;
+        }
     }
-
 }
 
 bool Controller::next_time_step()
@@ -131,15 +172,20 @@ bool Controller::next_time_step()
         }
         else if(Omni == drive_type)
         {
-
+            control_sig.linx = (error.x / dt) * Kp_lx;
+            control_sig.liny = (error.y / dt) * Kp_ly;
+            control_sig.ang = (error.theta / dt) * Kp_a;
+            // cout << "[Control Signal] " << control_sig.toStr() << endl;
         }
         else
         {
             cout << "[Critical] Invalid drive type !" <<  endl;
         }
 
-        threshold_min_control_sig();
+        // threshold_min_control_sig();
         threshold_max_control_sig();
+
+        // cout << "[Control Signal] " << control_sig.toStr() << endl;
         
     }
     else
@@ -160,7 +206,9 @@ bool Controller::next_time_step()
     }
     else if(Omni == drive_type)
     {
-
+        current_state.x += ( control_sig.linx * dt );
+        current_state.y += ( control_sig.liny * dt );
+        current_state.theta += ( control_sig.ang * dt );
     }
     else
     {

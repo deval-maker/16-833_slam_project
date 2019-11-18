@@ -9,3 +9,5 @@ void test_raycast2();
 
 void test_controller1();
 void test_controller2();
+void test_controller3();
+void test_controller4();

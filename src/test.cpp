@@ -65,14 +65,17 @@ void test_controller1()
     {
         cout << "[Controller 1] Test Failed !" << endl;
     }
+
+    cout << "[Current state] " << c1.current_state.toStr() << endl;
+
 }
 
 void test_controller2()
 {
-    // Motoion in theta
+    // Motoion in Y
     Controller c1 = Controller();
     c1.set_current_state(400.0, 600.0, 0.0);
-    c1.set_goal(400.0, 800.0, PI/2);
+    c1.set_goal(400.0, 606.0, 0.0);
 
     bool is_goal_reached = false;
     
@@ -102,6 +105,85 @@ void test_controller2()
     {
         cout << "[Controller 2] Test Failed !" << endl;
     }
+
+    cout << "[Current state] " << c1.current_state.toStr() << endl;
+
 }
 
+void test_controller3()
+{
+    // Motoion in Theta
+    Controller c1 = Controller();
+    c1.set_current_state(400.0, 600.0, 0.0);
+    c1.set_goal(400.0, 600.0, PI/2);
 
+    bool is_goal_reached = false;
+    
+    auto start = std::chrono::high_resolution_clock::now();
+    double time_elapsed = 0.0;
+    
+    while(!is_goal_reached)
+    {
+        is_goal_reached = c1.next_time_step();
+
+        // Sleep for 100ms 
+        std::chrono::duration<int, std::milli> sleep_time(100);
+        std::this_thread::sleep_for(sleep_time);
+
+        time_elapsed = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - start).count();
+        if(time_elapsed > 5.0)
+        {
+            break;
+        }
+    }
+
+    if(is_goal_reached)
+    {
+        cout << "[Controller 3] Test Passed !" << " Total time: " << time_elapsed << endl;
+    }
+    else
+    {
+        cout << "[Controller 3] Test Failed !" << endl;
+    }
+
+    cout << "[Current state] " << c1.current_state.toStr() << endl;
+}
+
+void test_controller4()
+{
+    // Motoion in X, Y, Theta
+    Controller c1 = Controller();
+    c1.set_current_state(400.0, 600.0, 0.0);
+    c1.set_goal(406.0, 606.0, PI/2);
+
+    bool is_goal_reached = false;
+    
+    auto start = std::chrono::high_resolution_clock::now();
+    double time_elapsed = 0.0;
+    
+    while(!is_goal_reached)
+    {
+        is_goal_reached = c1.next_time_step();
+
+        // Sleep for 100ms 
+        std::chrono::duration<int, std::milli> sleep_time(100);
+        std::this_thread::sleep_for(sleep_time);
+
+        time_elapsed = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - start).count();
+        if(time_elapsed > 5.0)
+        {
+            break;
+        }
+    }
+
+    if(is_goal_reached)
+    {
+        cout << "[Controller 4] Test Passed !" << " Total time: " << time_elapsed << endl;
+    }
+    else
+    {
+        cout << "[Controller 4] Test Failed !" << endl;
+    }
+
+    cout << "[Current state] " << c1.current_state.toStr() << endl;
+}
