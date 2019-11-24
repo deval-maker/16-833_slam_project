@@ -7,7 +7,7 @@
 
 using namespace std;
 
-bool test = true;
+bool test = false;
 
 int main()
 {
@@ -25,12 +25,18 @@ int main()
       
     }
     
-    String map_path = "data/map1.txt";
-    MapReader map_obj = MapReader(map_path);
- 
-    std::shared_ptr<Unique_Graph> unq_graph = std::make_shared<Unique_Graph>(100,200,200,32);
+    String map_path = "data/map2.txt";
+    
+    std::shared_ptr<MapReader> map_obj = std::make_shared<MapReader>(map_path);
+    // map_obj->visualize_map();
+
+    std::shared_ptr<Unique_Graph> unq_graph = std::make_shared<Unique_Graph>(map_obj,100,32);
 
     unq_graph->sample_vertices();
+    
+    auto mat = unq_graph->adjacency_mat;
+    
+
     auto pt = unq_graph->knn_tree.nearest_point({1,2,3});
 
     auto near_node = unq_graph->node_map[pt];

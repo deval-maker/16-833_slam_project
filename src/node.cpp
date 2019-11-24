@@ -9,6 +9,7 @@ node::node(int id, int x, int y, double theta)
     
 }
 
+
 int node::similarity(node &node1, node &node2)
 {
     int sim_count = 0;
@@ -29,3 +30,14 @@ int node::similarity(node &node1, node &node2)
     }
     return sim_count;
 }
+
+ostream & operator << (ostream &out, const node &n) 
+{ 
+    out<<"Node Info"<<std::endl;
+    out<<"id: "<<n.id<<std::endl;
+    out<<"x: "<<n.x<<std::endl;
+    out<<"y: "<<n.y<<std::endl;
+    out<<"Theta: "<<n.theta<<std::endl;
+    
+    return out;
+} 

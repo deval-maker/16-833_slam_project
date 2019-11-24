@@ -40,7 +40,7 @@ uint8_t MapReader::query_map(int i, int j)
     if (i >= MAP_SIZE_X || j >= MAP_SIZE_Y || i < 0 && j < 0)
     {
         cout << "[ Error ] Map query: " << i << " " << j << endl;
-        return -1;
+        return 0;
     }
     else
     {

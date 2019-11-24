@@ -17,7 +17,7 @@ class node
     }
 
     node(int id, int x, int y, double theta);
-    
+    friend ostream& operator<<(ostream& os, const node& dt);
     static int similarity(node &node1, node &node2);
     
 };

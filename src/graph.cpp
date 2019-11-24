@@ -1,54 +1,72 @@
 
 #include <graph.h>
+#include <MapReader.h>
 
 void Unique_Graph::sample_vertices()
-{
-    std::default_random_engine generator;
-    std::uniform_int_distribution<int> distribution_x(0, x_size);
-    std::uniform_int_distribution<int> distribution_y(0, y_size);
-    std::uniform_real_distribution<float> distribution_theta_idx(0, discrete_headings.size());
+{   
+    srand(time(0));
+    std::random_device dev;
+    std:: mt19937 rng(dev());
+    std::uniform_int_distribution<int> distribution_x(1, x_size-1);
+    std::uniform_int_distribution<int> distribution_y(1, y_size-1);
+    std::uniform_int_distribution<int> distribution_theta_idx(0, discrete_headings.size());
 
-    auto x = std::bind(distribution_x,generator);
-    auto y = std::bind(distribution_y,generator);
-    auto theta_idx = std::bind(distribution_theta_idx,generator);
+    
 
-    for (int i=0; i< num_vertices; i++){
+    int sampled_vertices = 0;
+    while (sampled_vertices < num_vertices){
 
-        int sample_x = x();
-        int sample_y = y();
-        int sample_theta = discrete_headings[theta_idx()];
+        int sample_x = distribution_x(rng);
+        int sample_y = distribution_y(rng);
+
+        if(map->query_map(sample_y,sample_y) <= 0){
+          continue;
+        }
+
+        int sample_theta = discrete_headings[distribution_theta_idx(rng)];
         point_t pt = {sample_x,sample_y,sample_theta};
         points.push_back(pt);
-        node sample_node(i,sample_x,sample_y,sample_theta);
+        node sample_node(sampled_vertices,sample_x,sample_y,sample_theta);
+        map->update_visible_landmarks(sample_node,0);
         node_map.insert(std::make_pair(pt,sample_node));
         vertices.push_back(sample_node);
+        sampled_vertices++;
 
     }
 
     knn_tree = KDTree(points);
+    std::cout<<"[INFO] Finished Sampling "<<num_vertices<<" Graph Vertices"<<std::endl;
+    
+
+    create_adj_mat();
     return;
 }
 
 
 void Unique_Graph::create_adj_mat()
 {
-    for(int i =0; i<num_vertices; i++){
-        for(int j=0; j<num_vertices; j++){
-            if(i != j)
-            {
-                int sim = node::similarity(vertices[i],vertices[j]);
-                adjacency_mat[vertices[i].id][vertices[j].id] = sim;
-                adjacency_mat[vertices[j].id][vertices[i].id] = sim;
+  
+  for(int i =0; i<num_vertices; i++){
+      for(int j=0; j<num_vertices; j++){
+          if(i != j)
+          {   
+              
+              int sim = node::similarity(vertices[i],vertices[j]);
+              adjacency_mat[vertices[i].id][vertices[j].id] = sim;
+              adjacency_mat[vertices[j].id][vertices[i].id] = sim;
 
-            }
-            else
-            {
-                adjacency_mat[vertices[i].id][vertices[j].id] = 0;
+          }
+          else
+          {
+              
 
-            }
+              adjacency_mat[vertices[i].id][vertices[j].id] = 0;
+              
+          }
 
-        }
-    }
+      }
+  }
+  std::cout<<"[INFO] Generated the Adjacency Matrix"<<std::endl;
 }
 
 bool Unique_Graph::check_dist(node mode, node vertex)
