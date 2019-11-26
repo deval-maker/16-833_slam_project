@@ -4,7 +4,7 @@
 #include <search.h>
 #include <MapReader.h>
 #include <test.h>
-
+#include <information_gain.h>
 using namespace std;
 
 bool test = true;
