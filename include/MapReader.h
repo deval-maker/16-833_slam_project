@@ -2,6 +2,7 @@
 
 #include <utils.h>
 #include <node.h>
+#include <eigen3/Eigen/Dense>
 
 #define MAP_SIZE_X 1000
 #define MAP_SIZE_Y 1000
@@ -32,5 +33,14 @@ public:
     void update_visible_landmarks(node &, bool);
     double correct_range(double angle);
     float toRadian(float degree);
+    point_t get_landmark_pose(int landmark_id)
+    {
+
+    }
+
+    meas get_measurement(int landmark_id, Eigen::Vector3f curr_pose)
+    {
+
+    }
 
 };

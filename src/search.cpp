@@ -133,8 +133,8 @@ SearchNode* Search::getNode(int x, int y, std::size_t Hash)
 }
 bool Search::validSucc(int x, int y)
 {
-  double value = m_mapReader->query_map(int(x),int(y));
-  if(value >= 255) return false;
+  uint8_t value = m_mapReader->query_map(int(x),int(y));
+  if(value == 0) return false;
   else return true;
 }
 

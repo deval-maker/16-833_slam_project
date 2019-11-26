@@ -21,3 +21,21 @@ class node
     static int similarity(node &node1, node &node2);
     
 };
+
+
+class meas
+{
+    public:
+    int landmark_id;
+    double dist;
+    double psi;
+
+    meas(){
+
+    }
+    meas(int landmark_id, double dist, double psi){
+        this->landmark_id = landmark_id;
+        this->dist = dist;
+        this->psi = psi;
+    }
+};

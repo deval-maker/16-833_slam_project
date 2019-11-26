@@ -7,7 +7,7 @@
 
 using namespace std;
 
-bool test = false;
+bool test = true;
 
 int main()
 {
@@ -30,7 +30,7 @@ int main()
     std::shared_ptr<MapReader> map_obj = std::make_shared<MapReader>(map_path);
     // map_obj->visualize_map();
 
-    std::shared_ptr<Unique_Graph> unq_graph = std::make_shared<Unique_Graph>(map_obj,100,32);
+    std::shared_ptr<Unique_Graph> unq_graph = std::make_shared<Unique_Graph>(map_obj,10000,32);
 
     unq_graph->sample_vertices();
     
