@@ -2,6 +2,7 @@
 
 #include <utils.h>
 #include <node.h>
+#include <eigen3/Eigen/Dense>
 
 #define MAP_SIZE_X 1000
 #define MAP_SIZE_Y 1000
@@ -15,6 +16,8 @@ private:
     double delta_theta = stepsize * PI/180.0;
     float delta_dist = 1.0;
     float laser_fov = 360;
+    vector<point_t> landmark_lookup;
+
 
 public:
     ifstream infile;
@@ -30,7 +33,13 @@ public:
     uint8_t* get_map(void);
 
     void update_visible_landmarks(node &, bool);
+    vector<meas> get_and_update_visible_landmarks(node &x_t, bool visualize);
+
     double correct_range(double angle);
     float toRadian(float degree);
+    
+    point_t get_landmark_pose(int landmark_id);
+
+    meas get_measurement(int landmark_id, Eigen::Vector3f curr_pose);
 
 };

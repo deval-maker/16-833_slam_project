@@ -19,7 +19,7 @@ void Unique_Graph::sample_vertices()
         int sample_x = distribution_x(rng);
         int sample_y = distribution_y(rng);
 
-        if(map->query_map(sample_y,sample_y) <= 0){
+        if(map->query_map(sample_y,sample_x) <= 10){
           continue;
         }
 

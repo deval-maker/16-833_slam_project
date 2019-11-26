@@ -21,3 +21,27 @@ class node
     static int similarity(node &node1, node &node2);
     
 };
+
+
+class meas
+{
+    public:
+    int landmark_id;
+    double dist;
+    double psi;
+    bool is_visible;
+
+    meas(){
+
+    }
+    meas(int landmark_id, double dist, double psi){
+        this->landmark_id = landmark_id;
+        this->dist = dist;
+        this->psi = psi;
+    }
+
+    string toStr()
+    {
+        return  "Landmark ID: " + to_string(landmark_id) + " Distance: " + to_string(dist) +  " Bearing Angle: " +  to_string((psi*180)/PI) + " degrees";
+    }
+};
