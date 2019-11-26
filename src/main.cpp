@@ -15,6 +15,9 @@ int main()
     {
       test_raycast1();
       test_raycast2();
+      test_raycast3();
+      test_raycast4();
+      test_raycast5();
 
       test_controller1();
       test_controller2();
