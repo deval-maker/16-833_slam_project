@@ -40,6 +40,7 @@ class Search
   SearchNode* m_start;
   SearchNode* m_goal;
   MapReader* m_mapReader;
+  int m_num_expansions = 0;
   double m_actions[8][2];
   double m_action_cost[8];
   double m_numActions;
@@ -56,11 +57,12 @@ class Search
   SearchNode* getNode(int succ_x, int succ_y, std::size_t Hash);
   SearchNode* createNode(int x, int y);
   std::vector<point_t> computePath(SearchNode* goal);
+  std::vector<point_t> computeActions(SearchNode* goal);
   bool validSucc(int succ_x, int succ_y);
-  void set_mapReader(MapReader* mapReader);
   void printOpen();
 public:
   Search();
+  void set_mapReader(MapReader* mapReader);
   void set_start(point_t startPoint);
   void set_goal(point_t goalPoint);
   std::vector<point_t> plan();

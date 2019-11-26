@@ -3,7 +3,7 @@
 #include <MapReader.h>
 
 void Unique_Graph::sample_vertices()
-{   
+{
     srand(time(0));
     std::random_device dev;
     std:: mt19937 rng(dev());
@@ -11,7 +11,7 @@ void Unique_Graph::sample_vertices()
     std::uniform_int_distribution<int> distribution_y(1, y_size-1);
     std::uniform_int_distribution<int> distribution_theta_idx(0, discrete_headings.size());
 
-    
+
 
     int sampled_vertices = 0;
     while (sampled_vertices < num_vertices){
@@ -36,7 +36,7 @@ void Unique_Graph::sample_vertices()
 
     knn_tree = KDTree(points);
     std::cout<<"[INFO] Finished Sampling "<<num_vertices<<" Graph Vertices"<<std::endl;
-    
+
 
     create_adj_mat();
     return;
@@ -45,12 +45,12 @@ void Unique_Graph::sample_vertices()
 
 void Unique_Graph::create_adj_mat()
 {
-  
+
   for(int i =0; i<num_vertices; i++){
       for(int j=0; j<num_vertices; j++){
           if(i != j)
-          {   
-              
+          {
+
               int sim = node::similarity(vertices[i],vertices[j]);
               adjacency_mat[vertices[i].id][vertices[j].id] = sim;
               adjacency_mat[vertices[j].id][vertices[i].id] = sim;
@@ -58,10 +58,10 @@ void Unique_Graph::create_adj_mat()
           }
           else
           {
-              
+
 
               adjacency_mat[vertices[i].id][vertices[j].id] = 0;
-              
+
           }
 
       }
@@ -74,12 +74,35 @@ bool Unique_Graph::check_dist(node mode, node vertex)
   return pow(pow((mode.x - vertex.x),2) + pow(mode.y-vertex.y,2),1.0/2) < m_maxTargetDist;
 }
 
+
+void Unique_Graph::visualize_nodes(pointVec targetNeighborPoints)
+{
+  for(int i = 0;i < targetNeighborPoints.size(); i++)
+  {
+    map->plot_point(targetNeighborPoints[i][0],targetNeighborPoints[i][1],80);
+  }
+  map->visualize_map();
+}
+
+void Unique_Graph::visualize_nodes(std::vector<node> nodes)
+{
+  for(int i = 0;i < nodes.size(); i++)
+  {
+    std::cout<<"Plotting \n";
+    map->plot_point(nodes[i].x,nodes[i].y,0);
+  }
+  map->visualize_map();
+}
+
 node Unique_Graph::target_state(node targetMode, std::vector<node> modes)
 {
 
   point_t targetModePoint{double(targetMode.x),double(targetMode.y),double(targetMode.theta)};
   pointVec targetNeighborPoints = knn_tree.neighborhood_points(targetModePoint,m_maxTargetDist);
+  // std::cout<<"Target Neighbor points size "<<targetNeighborPoints.size()<<'\n';
 
+  // visualize_nodes(vertices);
+  // visualize_nodes(targetNeighborPoints);
   int minWeight = INT_MAX;
   node target_state;
 
@@ -87,11 +110,13 @@ node Unique_Graph::target_state(node targetMode, std::vector<node> modes)
   {
     node targetNeighbor = node_map[targetNeighborPoints[i]];
     double weight = 0;
+    // std::cout<<"Total number of modes "<<modes.size()<<'\n';
     for(int j=0;j<modes.size();j++)
     {
       if(modes[j].id == targetMode.id) continue;
       point_t otherModePoint{double(modes[j].x), double(modes[j].y), double(modes[j].theta)};
       pointVec otherNeighborPoints = knn_tree.neighborhood_points(otherModePoint,m_maxTargetDist);
+      // std::cout<<"Other Neighbor points size "<<otherNeighborPoints.size()<<'\n';
 
       for(int k = 0; k<otherNeighborPoints.size();k++)
       {

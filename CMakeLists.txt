@@ -5,9 +5,7 @@ set (CMAKE_CXX_STANDARD 11)
 include_directories(include)
 find_package(OpenCV REQUIRED)
 find_package(Boost REQUIRED)
-find_package(Eigen3 REQUIRED NO_MODULE)
 include_directories(${Boost_INCLUDE_DIRS})
-include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
 
 add_executable(proj
     src/node.cpp
@@ -18,7 +16,6 @@ add_executable(proj
     src/search.cpp
     src/test.cpp
     src/controller.cpp
-    src/belief.cpp
 )
 
 set(CMAKE_BINARY_DIR "../bin")

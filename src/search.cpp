@@ -67,8 +67,11 @@ std::vector<point_t> Search::plan()
       return computePath(topNode);
     }
     expand(topNode);
+    m_num_expansions++;
     // printOpen();
   }
+  std::cout<<"Num of expansions "<<m_num_expansions<<'\n';
+  return {};
 }
 
 bool Search::isGoal(SearchNode* node)
@@ -87,6 +90,27 @@ std::vector<point_t> Search::computePath(SearchNode* goal)
     state.push_back(curr->y);
     path.push_back(state);
     curr = curr->parent;
+  }
+  return path;
+}
+
+std::vector<point_t> Search::computeActions(SearchNode* goal)
+{
+  SearchNode* next = goal;
+  std::vector<point_t> path;
+
+  if(goal->parent!=NULL)
+  {
+    SearchNode* curr = goal->parent;
+    std::vector<point_t> actions;
+    while(curr!=NULL)
+    {
+      point_t state;
+      state.push_back(next->x - curr->x);
+      state.push_back(next->y - curr->y);
+      path.push_back(state);
+      curr = curr->parent;
+    }
   }
   return path;
 }
@@ -133,8 +157,15 @@ SearchNode* Search::getNode(int x, int y, std::size_t Hash)
 }
 bool Search::validSucc(int x, int y)
 {
+<<<<<<< HEAD
+  // std::cout<<"Inside valid succ check \n";
+  uint8_t value = m_mapReader->query_map(y,x);
+  // std::cout<<"value "<<value <<" \n";
+  if(value != 255) return false;
+=======
   uint8_t value = m_mapReader->query_map(int(x),int(y));
   if(value == 0) return false;
+>>>>>>> 9a67e9699e9559528b5848ae3944f65cd6f3d455
   else return true;
 }
 
@@ -147,7 +178,8 @@ void Search::expand(SearchNode* parent)
     int succ_x = parent->x + m_actions[i][0];
     int succ_y = parent->y + m_actions[i][1];
 
-    // if(!validSucc(succ_x,succ_y)) continue;
+    // std::cout<<"Successors "<<succ_x<<' '<<succ_y<<'\n';
+    if(!validSucc(succ_x,succ_y)) continue;
     // std::cout<<"Successors "<<succ_x<<' '<<succ_y<<'\n';
     std::size_t succHash = getHash(succ_x,succ_y);
     if(closedSet.find(succHash) != closedSet.end()) continue;
