@@ -56,3 +56,8 @@ MapReader* _map)
     }
 }
 
+
+point_t get_control(point_t start_state, point_t goal_state)
+{
+    
+}

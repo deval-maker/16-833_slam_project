@@ -166,6 +166,11 @@ void MapReader::update_visible_landmarks(node &x_t, bool visualize)
 
 }
 
+vector<meas> MapReader::get_landmark_measurement(EigenVector3f pose)
+{
+    return {};
+}
+
 vector<meas> MapReader::get_and_update_visible_landmarks(node &x_t, bool visualize)
 {
     vector<meas> ret;
