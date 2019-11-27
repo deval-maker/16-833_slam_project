@@ -56,7 +56,7 @@ void MapReader::visualize_map(void)
 void MapReader::visualize_point(point_t point, cv::viz::Color color)
 {
     Point ray_pt0 = Point((int)point[0], (int)point[1]);
-    cv::circle(A, ray_pt0, 2, color, CV_FILLED, 1, 0);
+    cv::circle(A, ray_pt0, 5, color, CV_FILLED, 1, 0);
 }
 
 void MapReader::visualize_path(vector<point_t> path, cv::viz::Color color)
@@ -66,7 +66,7 @@ void MapReader::visualize_path(vector<point_t> path, cv::viz::Color color)
     for(int i = 0; i < path.size(); i++)
     {
         pt = Point(path[i][0], path[i][1]);
-        cv::circle(A, pt, 2, color, CV_FILLED, 1, 0);
+        cv::circle(A, pt, 5, color, CV_FILLED, 1, 0);
     }
 }
 

@@ -119,20 +119,17 @@ std::vector<point_t> Search::computeActions(SearchNode* goal)
 
 std::size_t Search::getHash(SearchNode node)
 {
-  std::size_t seed = 0;
-  boost::hash_combine(seed,node.x);
-  boost::hash_combine(seed,node.y);
-
-  return seed;
+  string hash_value;
+  hash_value = to_string(node.x) + "," + to_string(node.y);
+  return std::hash<string>()(hash_value);
 }
 
 std::size_t Search::getHash(int node_x, int node_y)
 {
-  std::size_t seed = 0;
-  boost::hash_combine(seed,node_x);
-  boost::hash_combine(seed,node_y);
+  string hash_value;
+  hash_value = to_string(node_x) + "," + to_string(node_y);
+  return std::hash<string>()(hash_value);
 
-  return seed;
 }
 
 SearchNode* Search::createNode(int x, int y)
@@ -168,7 +165,7 @@ bool Search::validSucc(int x, int y)
 
 void Search::expand(SearchNode* parent)
 {
-  // std::cout<<"Expanding "<<parent->x<<" "<<parent->y<<'\n';
+  std::cout<<"Expanding "<<parent->x<<" "<<parent->y<<'\n';
   m_openList.pop();
   for(int i = 0; i<m_numActions; i++)
   {
@@ -176,7 +173,7 @@ void Search::expand(SearchNode* parent)
     int succ_y = parent->y + m_actions[i][1];
 
     // std::cout<<"Successors "<<succ_x<<' '<<succ_y<<'\n';
-    // if(!validSucc(succ_x,succ_y)) continue;
+    if(!validSucc(succ_x,succ_y)) continue;
     // std::cout<<"Successors "<<succ_x<<' '<<succ_y<<'\n';
     std::size_t succHash = getHash(succ_x,succ_y);
     if(closedSet.find(succHash) != closedSet.end()) continue;
