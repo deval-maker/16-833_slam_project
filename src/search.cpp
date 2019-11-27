@@ -165,7 +165,7 @@ bool Search::validSucc(int x, int y)
 
 void Search::expand(SearchNode* parent)
 {
-  std::cout<<"Expanding "<<parent->x<<" "<<parent->y<<'\n';
+  // std::cout<<"Expanding "<<parent->x<<" "<<parent->y<<'\n';
   m_openList.pop();
   for(int i = 0; i<m_numActions; i++)
   {

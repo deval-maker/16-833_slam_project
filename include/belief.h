@@ -22,6 +22,8 @@ class mode{
         mode(Eigen::Vector3f mean, Eigen::Matrix3f sigma,int weight);
         Eigen::Matrix3f getGt(double v, double theta);
         Eigen::MatrixXf getHt(double q, Eigen::Vector2f delta);
+        void visualize_ellipse(MapReader* map);
+
     private:
 
 

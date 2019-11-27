@@ -35,6 +35,7 @@ public:
     void visualize_point(point_t point, cv::viz::Color color);
     void visualize_path(vector<point_t> path, cv::viz::Color color);
     void visualize_UG(vector<node> ug, cv::viz::Color color);
+    void visualize_ellipse(Eigen::Vector2f mean, Eigen::Matrix2f sigma);
 
     void clear_session();
     void viz_session();

@@ -1,5 +1,5 @@
 #include <MapReader.h>
-
+#include <utils.h>
 MapReader::MapReader(string src_path_map)
 {
     string temp;
@@ -68,6 +68,27 @@ void MapReader::visualize_path(vector<point_t> path, cv::viz::Color color)
         pt = Point(path[i][0], path[i][1]);
         cv::circle(A, pt, 5, color, CV_FILLED, 1, 0);
     }
+}
+double to_degree(double radian)
+{
+    return radian*PI/180;
+}
+
+void MapReader::visualize_ellipse(Eigen::Vector2f mean, Eigen::Matrix2f sigma)
+{
+    Eigen::SelfAdjointEigenSolver<Eigen::Matrix2f> eigensolver(sigma);
+    if (eigensolver.info() != Eigen::Success)
+        {
+            std::cout<<"Problem with Eigen vector computation \n";
+            return ;
+        }
+
+    // find angle of eigvector fo largest eigen value
+    double theta = atan2(double(eigensolver.eigenvectors()(1, 0)), double(eigensolver.eigenvectors()(0, 0)));
+    cout << "theta of ellipse" << theta << endl;
+    double factor = 300;
+    std::cout<<"Axes length "<<factor*sqrt(0.5991*eigensolver.eigenvalues()(1,0))<<" "<<factor*sqrt(0.5991*eigensolver.eigenvalues()(0,0))<<'\n';
+    cv::ellipse(A, Point(mean[0], mean[1]), Size(factor*sqrt(0.5991*eigensolver.eigenvalues()(1,0)), factor*sqrt(0.5991*eigensolver.eigenvalues()(0,0))), to_degree(theta), 0, 360, Scalar(255,0,0), 3, 8);
 }
 
 void MapReader::clear_session()
