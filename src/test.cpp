@@ -16,11 +16,12 @@ void test_raycast2()
     MapReader map_obj = MapReader(map_path);
     
     // Make sure that the laser_fov is 360  
-    node n1 = node(1, 400, 600, 0);
+    Eigen::Vector3f curr_pose = Eigen::Vector3f(400, 600, 0);
+    vector<meas> land_meas;
 
-    map_obj.update_visible_landmarks(n1, false);
+    land_meas = map_obj.get_landmark_measurements(curr_pose);
 
-    if(n1.visible_landmarks.size() == 2)
+    if(land_meas.size() == 2)
     {
         cout << "[MapReader 2] Test Passed !" << endl;
     }
@@ -51,63 +52,6 @@ void test_raycast3()
 
 
     cout << "[MapReader 3] Test Passed !" << endl;
-}
-
-void test_raycast4()
-{
-    String map_path = "data/map2.txt";
-    MapReader map_obj = MapReader(map_path);
-    
-    // Make sure that the laser_fov is 360  
-    node n1 = node(1, 400, 600, 0);
-
-    vector<meas> landmark_meas;
-
-    landmark_meas = map_obj.get_and_update_visible_landmarks(n1, false);
-
-    if(n1.visible_landmarks.size() == 2)
-    {
-        cout << "landmark meas length: " << landmark_meas.size() << endl;
-        
-        for(int i =0; i < landmark_meas.size(); i++)
-        {
-            cout << landmark_meas[i].toStr() << endl;
-        }
-
-        cout << "[MapReader 4] Test Passed !" << endl;
-    }
-    else
-    {
-        cout << "[MapReader 4] Test Failed !" << endl;
-    }
-}
-
-
-void test_raycast5()
-{
-    String map_path = "data/map2.txt";
-    MapReader map_obj = MapReader(map_path);
-    meas land_meas;
-    Eigen::Vector3f curr_pose;
-    
-    int landmark_id = 1;
-
-    curr_pose[0] = 400.0;
-    curr_pose[1] = 600.0;
-    curr_pose[2] = 0.0;
-    
-    land_meas = map_obj.get_measurement(landmark_id, curr_pose);
-
-    if(land_meas.is_visible)
-    {
-        cout << land_meas.toStr() << endl;
-        cout << "[MapReader 5] Test Passed !" << endl;
-    }
-    else
-    {
-        cout << "[MapReader 5] Test Failed !" << endl;
-    }
-
 }
 
 void test_controller1()

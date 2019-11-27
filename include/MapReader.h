@@ -32,14 +32,10 @@ public:
     uint8_t query_map(int i, int j);
     uint8_t* get_map(void);
 
-    void update_visible_landmarks(node &, bool);
-    vector<meas> get_and_update_visible_landmarks(node &x_t, bool visualize);
+    vector<meas> get_landmark_measurements(Eigen::Vector3f curr_pose);
+    point_t get_landmark_pose(int landmark_id);
 
     double correct_range(double angle);
     float toRadian(float degree);
     
-    point_t get_landmark_pose(int landmark_id);
-
-    meas get_measurement(int landmark_id, Eigen::Vector3f curr_pose);
-
 };
