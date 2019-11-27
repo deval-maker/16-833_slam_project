@@ -1,4 +1,9 @@
-#include <belief.h>
+point_t get_control(point_t start_state, point_t goal_state)
+{
+    return point_t();
+}
+
+
 void get_optimal_policy(vector<vector<point_t>> paths, vector<mode> modes,
 MapReader* _map)
 {
@@ -57,7 +62,3 @@ MapReader* _map)
 }
 
 
-point_t get_control(point_t start_state, point_t goal_state)
-{
-    
-}

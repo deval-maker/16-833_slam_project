@@ -44,10 +44,14 @@ class meas
     {
         return  "Landmark ID: " + to_string(landmark_id) + " Distance: " + to_string(dist) +  " Bearing Angle: " +  to_string((psi*180)/PI) + " degrees";
     }
-    friend bool operator== (const meas &m1, const meas &m2);
+    // friend bool operator== (const meas &m1, const meas &m2);
+    bool operator== (const meas &m1)
+    {
+        return m1.landmark_id == landmark_id;
+    }
 };
 
-bool operator== (const meas &m1, const meas &m2)
-{
-    return m1.landmark_id == m2.landmark_id;
-}
+// bool operator== (const meas &m1, const meas &m2)
+// {
+//     return m1.landmark_id == m2.landmark_id;
+// }

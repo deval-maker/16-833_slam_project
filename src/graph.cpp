@@ -77,21 +77,21 @@ bool Unique_Graph::check_dist(node mode, node vertex)
 
 void Unique_Graph::visualize_nodes(pointVec targetNeighborPoints)
 {
-  for(int i = 0;i < targetNeighborPoints.size(); i++)
-  {
-    map->plot_point(targetNeighborPoints[i][0],targetNeighborPoints[i][1],80);
-  }
-  map->visualize_map();
+  // for(int i = 0;i < targetNeighborPoints.size(); i++)
+  // {
+  //   map->plot_point(targetNeighborPoints[i][0],targetNeighborPoints[i][1],80);
+  // }
+  // map->visualize_map();
 }
 
 void Unique_Graph::visualize_nodes(std::vector<node> nodes)
 {
-  for(int i = 0;i < nodes.size(); i++)
-  {
-    std::cout<<"Plotting \n";
-    map->plot_point(nodes[i].x,nodes[i].y,0);
-  }
-  map->visualize_map();
+  // for(int i = 0;i < nodes.size(); i++)
+  // {
+  //   std::cout<<"Plotting \n";
+  //   map->plot_point(nodes[i].x,nodes[i].y,0);
+  // }
+  // map->visualize_map();
 }
 
 node Unique_Graph::target_state(node targetMode, std::vector<node> modes)

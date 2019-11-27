@@ -16,6 +16,8 @@ add_executable(proj
     src/search.cpp
     src/test.cpp
     src/controller.cpp
+    src/belief.cpp
+
 )
 
 set(CMAKE_BINARY_DIR "../bin")

@@ -19,7 +19,7 @@ void test_raycast2()
     Eigen::Vector3f curr_pose = Eigen::Vector3f(400, 600, 0);
     vector<meas> land_meas;
 
-    land_meas = map_obj.get_landmark_measurements(curr_pose);
+    land_meas = map_obj.get_landmark_measurement(curr_pose);
 
     if(land_meas.size() == 2)
     {

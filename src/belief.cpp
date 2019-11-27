@@ -102,6 +102,7 @@ void mode::propagate_mode(double v, double omega,vector<meas> &gt_meas,MapReader
 
 void mode::propagate_motion(double v, double omega)
 {
+    Eigen::Vector3f mean_bar;
     mean_bar[0] = mean[0] + v*delT*cos(mean[2]);
     mean_bar[1] = mean[1] + v*delT*sin(mean[2]);
     mean_bar[2] = mean[2] + omega*delT;
