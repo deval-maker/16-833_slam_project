@@ -18,6 +18,9 @@ private:
     float laser_fov = 360;
     vector<point_t> landmark_lookup;
 
+    // images
+    cv::Mat A;
+    cv::Mat B;
 
 public:
     ifstream infile;
@@ -29,9 +32,12 @@ public:
     MapReader(string src_path_map);
     
     void visualize_map(void);
-    void visualize_point(point_t);
-    void visualize_path(vector<point_t> path);
-    void visualize_UG(vector<node> ug);
+    void visualize_point(point_t point, cv::viz::Color color);
+    void visualize_path(vector<point_t> path, cv::viz::Color color);
+    void visualize_UG(vector<node> ug, cv::viz::Color color);
+
+    void clear_session();
+    void viz_session();
 
     uint8_t query_map(int i, int j);
     uint8_t* get_map(void);

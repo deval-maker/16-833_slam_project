@@ -45,54 +45,47 @@ MapReader::MapReader(string src_path_map)
     landmark_pose.push_back(600);
     // Add to lookup
     landmark_lookup.push_back(landmark_pose);
-
 }
 
 void MapReader::visualize_map(void)
 {
-    cv::Mat A = Mat(MAP_SIZE_X, MAP_SIZE_Y, CV_8U);
-    std::memcpy(A.data, &(_map), size_x * size_y * sizeof(uint8_t));
-    cv::imshow("SLAM Project", A);
-    cv::waitKey(0);
+    clear_session();
+    viz_session();
 }
 
-void MapReader::visualize_point(point_t point)
+void MapReader::visualize_point(point_t point, cv::viz::Color color)
 {
-    // add the point 
     Point ray_pt0 = Point((int)point[0], (int)point[1]);
-
-    cv::Mat A = Mat(MAP_SIZE_X, MAP_SIZE_Y, CV_8UC3);
-    cv::Mat B = Mat(MAP_SIZE_X, MAP_SIZE_Y, CV_8UC1);
-
-    std::memcpy(B.data, _map, MAP_SIZE_X * MAP_SIZE_Y * sizeof(uint8_t));
-    cv::cvtColor(B, A, cv::COLOR_GRAY2BGR);
-
-    cv::circle(A, ray_pt0, 2, Scalar(0, 0, 255), CV_FILLED, 1, 0);
-
-    cv::imshow("SLAM Project", A);
-    cv::waitKey(0);
+    cv::circle(A, ray_pt0, 2, color, CV_FILLED, 1, 0);
 }
 
-void MapReader::visualize_path(vector<point_t> path)
+void MapReader::visualize_path(vector<point_t> path, cv::viz::Color color)
 {
-    cv::Mat A = Mat(MAP_SIZE_X, MAP_SIZE_Y, CV_8UC3);
-    cv::Mat B = Mat(MAP_SIZE_X, MAP_SIZE_Y, CV_8UC1);
-
-    std::memcpy(B.data, _map, MAP_SIZE_X * MAP_SIZE_Y * sizeof(uint8_t));
-    cv::cvtColor(B, A, cv::COLOR_GRAY2BGR);
     Point pt;
 
     for(int i = 0; i < path.size(); i++)
     {
         pt = Point(path[i][0], path[i][1]);
-        cv::circle(A, pt, 2, Scalar(0, 255, 0), CV_FILLED, 1, 0);
+        cv::circle(A, pt, 2, color, CV_FILLED, 1, 0);
     }
-
-    cv::imshow("SLAM Project", A);
-    cv::waitKey(0);
 }
 
-void MapReader::visualize_UG(vector<node> ug)
+void MapReader::clear_session()
+{
+    A = Mat(MAP_SIZE_X, MAP_SIZE_Y, CV_8UC3);
+    B = Mat(MAP_SIZE_X, MAP_SIZE_Y, CV_8UC1);
+
+    std::memcpy(B.data, _map, MAP_SIZE_X * MAP_SIZE_Y * sizeof(uint8_t));
+    cv::cvtColor(B, A, cv::COLOR_GRAY2BGR);  
+}
+
+void MapReader::viz_session()
+{
+    cv::imshow("SLAM Project", A);
+    cv::waitKey(0);
+} 
+
+void MapReader::visualize_UG(vector<node> ug, cv::viz::Color color)
 {
     cv::Mat A = Mat(MAP_SIZE_X, MAP_SIZE_Y, CV_8UC3);
     cv::Mat B = Mat(MAP_SIZE_X, MAP_SIZE_Y, CV_8UC1);
@@ -104,7 +97,7 @@ void MapReader::visualize_UG(vector<node> ug)
     for(int i = 0; i < ug.size(); i++)
     {
         pt = Point(ug[i].x, ug[i].y);
-        cv::circle(A, pt, 2, Scalar(0, 255, 0), CV_FILLED, 1, 0);
+        cv::circle(A, pt, 2, color, CV_FILLED, 1, 0);
     }
 
     cv::imshow("SLAM Project", A);
