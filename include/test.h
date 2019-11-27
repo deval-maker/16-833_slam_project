@@ -7,8 +7,6 @@
 void test_raycast1();
 void test_raycast2();
 void test_raycast3();
-void test_raycast4();
-void test_raycast5();
 
 void test_controller1();
 void test_controller2();
