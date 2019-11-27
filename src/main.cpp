@@ -34,12 +34,13 @@ int main()
 
     std::shared_ptr<MapReader> map_obj = std::make_shared<MapReader>(map_path);
     map_obj->visualize_map();
-    map_obj->viz_session(); //------------------Creating a session for visualisation----------------
+
 //------------- Uniqueness graph creation --------------------------------
     std::shared_ptr<Unique_Graph> unq_graph = std::make_shared<Unique_Graph>(map_obj, 500, 32);
 
     unq_graph->sample_vertices();
     unq_graph->viz_graph();
+
 // ------------ Hardcode Modes --------------------------------------------
     Eigen::Vector3f firstmean, secondmean, thirdmean;
     firstmean << 150, 175, 0; 
@@ -118,7 +119,8 @@ int main()
         plans.push_back(actions);
     }
 
-    map_obj->clear_session();
+    map_obj->viz_session(); //  Creating a session for visualisation
+    // map_obj->clear_session();
     // Spawn Modes
 
     // Hardcode true Mode
