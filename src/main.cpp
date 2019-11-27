@@ -75,7 +75,7 @@ int main()
     vector<point_t> visualizationPoint{firstModePoint, firstTargetPoint, secondModePoint, 
     secondTargetPoint, thirdModePoint, thirdTargetPoint};
 
-    map_obj->visualize_path(visualizationPoint, cv::viz::Color::blue());
+    map_obj->visualize_path(visualizationPoint, cv::viz::Color::red());
     
     // map_obj->visualize_point(firstModePoint);
     // map_obj->visualize_point(secondModePoint);
@@ -112,9 +112,9 @@ int main()
         vector<point_t> actions = search.plan();
         // std::cout<<"actions size "<<actions.size()<<'\n';
         vector<point_t> plan = convert_to_path(start_point, actions);
-        // std::cout<<"plan size "<<plan.size()<<'\n';
+        std::cout<<"plan size "<<plan.size()<<'\n';
 
-        map_obj->visualize_path(visualizationPoint, cv::viz::Color::green());
+        map_obj->visualize_path(plan, cv::viz::Color::green());
         plans.push_back(actions);
     }
 
