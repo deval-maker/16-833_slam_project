@@ -29,6 +29,7 @@ int main()
 {
 
     if(test) test_();
+
 //------------- Map Reader  --------------------------------
     String map_path = "data/map2.txt";
 
@@ -76,7 +77,6 @@ int main()
     vector<point_t> visualizationPoint{firstModePoint, firstTargetPoint, secondModePoint, 
     secondTargetPoint, thirdModePoint, thirdTargetPoint};
 
-    map_obj->visualize_path(visualizationPoint, cv::viz::Color::red());
     
     // map_obj->visualize_point(firstModePoint);
     // map_obj->visualize_point(secondModePoint);
@@ -119,11 +119,14 @@ int main()
         plans.push_back(actions);
     }
 
+    for(int i = 0; i< plans.size(); i++)
+    {
+        reverse(plans[i].begin(), plans[i].end());
+    }
+    map_obj->visualize_path(visualizationPoint, cv::viz::Color::red());
+
     map_obj->viz_session(); //  Creating a session for visualisation
-    // map_obj->clear_session();
-    // Spawn Modes
 
-    // Hardcode true Mode
 
-    // Raycast and get all the measurements
+
 }

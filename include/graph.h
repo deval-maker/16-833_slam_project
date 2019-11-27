@@ -38,7 +38,7 @@ class Unique_Graph
 
     Unique_Graph()
     {
-      m_maxTargetDist = 1;
+      m_maxTargetDist = 10000;
       a = 10;
     }
 
@@ -50,7 +50,7 @@ class Unique_Graph
         this->y_size = map->size_y;
         std::vector<std::vector<int> > mat(num_vertices,std::vector<int>(num_vertices));
         adjacency_mat = mat;
-        m_maxTargetDist = 100;
+        m_maxTargetDist = 1000;
         a = 10;
 
         for(double i = 0; i< 2*M_PI; i += 2*M_PI/num_headings){
