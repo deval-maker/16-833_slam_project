@@ -32,6 +32,7 @@ public:
     uint8_t query_map(int i, int j);
     uint8_t* get_map(void);
 
+    void update_visible_landmarks(node &x_t, bool visualize);
     vector<meas> get_landmark_measurement(Eigen::Vector3f curr_pose);
     point_t get_landmark_pose(int landmark_id);
 
