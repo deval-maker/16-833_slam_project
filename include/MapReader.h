@@ -31,6 +31,7 @@ public:
     void visualize_map(void);
     void visualize_point(point_t);
     void visualize_path(vector<point_t> path);
+    void visualize_UG(vector<node> ug);
 
     uint8_t query_map(int i, int j);
     uint8_t* get_map(void);
