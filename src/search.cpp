@@ -65,7 +65,7 @@ std::vector<point_t> Search::plan()
     SearchNode* topNode = m_openList.top();
     if(isGoal(topNode))
     {
-      return computePath(topNode);
+      return computeActions(topNode);
     }
     expand(topNode);
     m_num_expansions++;
@@ -110,6 +110,7 @@ std::vector<point_t> Search::computeActions(SearchNode* goal)
       state.push_back(next->x - curr->x);
       state.push_back(next->y - curr->y);
       path.push_back(state);
+      next = curr;
       curr = curr->parent;
     }
   }
@@ -167,7 +168,7 @@ bool Search::validSucc(int x, int y)
 
 void Search::expand(SearchNode* parent)
 {
-  std::cout<<"Expanding "<<parent->x<<" "<<parent->y<<'\n';
+  // std::cout<<"Expanding "<<parent->x<<" "<<parent->y<<'\n';
   m_openList.pop();
   for(int i = 0; i<m_numActions; i++)
   {
@@ -175,7 +176,7 @@ void Search::expand(SearchNode* parent)
     int succ_y = parent->y + m_actions[i][1];
 
     // std::cout<<"Successors "<<succ_x<<' '<<succ_y<<'\n';
-    if(!validSucc(succ_x,succ_y)) continue;
+    // if(!validSucc(succ_x,succ_y)) continue;
     // std::cout<<"Successors "<<succ_x<<' '<<succ_y<<'\n';
     std::size_t succHash = getHash(succ_x,succ_y);
     if(closedSet.find(succHash) != closedSet.end()) continue;

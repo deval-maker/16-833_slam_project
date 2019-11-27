@@ -10,6 +10,21 @@ using namespace std;
 
 bool test = false;
 
+vector<point_t> convert_to_path(point_t start_state, vector<point_t> actions)
+{
+    vector<point_t> plan;
+    plan.push_back(start_state);
+    point_t current = start_state;
+    for(int i = actions.size() - 1; i >= 0; i--)
+    {
+        current[0] += actions[i][0];
+        current[1] += actions[i][1];
+        // std::cout<<"Actions "<<actions[i][0]<<' '<<actions[i][1]<<'\n';
+        plan.push_back(current);
+    } 
+    return plan;
+}
+
 int main()
 {
 
@@ -56,6 +71,11 @@ int main()
     point_t secondModePoint{secondNode.x, secondNode.y}, secondTargetPoint{secondTarget.x, secondTarget.y};
     point_t thirdModePoint{thirdNode.x, thirdNode.y}, thirdTargetPoint{thirdTarget.x, thirdTarget.y};
  
+    vector<point_t> visualizationPoint{firstModePoint, firstTargetPoint, secondModePoint, 
+    secondTargetPoint, thirdModePoint, thirdTargetPoint};
+
+    map_obj->visualize_path(visualizationPoint);
+    
     // map_obj->visualize_point(firstModePoint);
     // map_obj->visualize_point(secondModePoint);
     // map_obj->visualize_point(thirdModePoint);
@@ -65,16 +85,36 @@ int main()
     // map_obj->visualize_point(thirdTargetPoint);
 // -----------------------Plan to Target State ------------------------
 
-    Search search;
-    search.set_start(firstModePoint);
-    search.set_goal(firstTargetPoint);
-    search.set_mapReader(map_obj.get());
-    vector<point_t> plan = search.plan();
-
-    for(int i = 0; i < plan.size(); i++)
+    vector<vector<point_t>> plans;
+    for(int counter = 0; counter < 3; counter++)
     {
-        std::cout<<plan[i][0]<<' '<<plan[i][1]<<'\n';
-    } 
+        point_t start_point, goal_point;
+        Search search;
+        if(counter == 0)
+        {
+            start_point = firstModePoint;
+            goal_point = firstTargetPoint;
+        }
+        else if(counter == 1)
+        {
+            start_point = secondModePoint;
+            goal_point = secondTargetPoint;
+        }
+        else 
+        {
+            start_point = thirdModePoint;
+            goal_point = thirdTargetPoint;
+        }
+        search.set_start(start_point);
+        search.set_goal(goal_point);
+        search.set_mapReader(map_obj.get());
+        vector<point_t> actions = search.plan();
+        // std::cout<<"actions size "<<actions.size()<<'\n';
+        vector<point_t> plan = convert_to_path(start_point, actions);
+        // std::cout<<"plan size "<<plan.size()<<'\n';
+        map_obj->visualize_path(plan);
+        plans.push_back(actions);
+    }
 
     // Spawn Modes
 
