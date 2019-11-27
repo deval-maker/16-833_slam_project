@@ -65,6 +65,7 @@ class Unique_Graph
     node target_state(node targetMode, std::vector<node> modes);
     void visualize_nodes(pointVec targetNeighborPoints);
     void visualize_nodes(std::vector<node> nodes);
+    void viz_graph();
 
     private:
 
@@ -73,4 +74,5 @@ class Unique_Graph
     void create_adj_mat();
     static int similarity( node& node1, node& node2);
     bool check_dist(node mode, node vertex);
+    
 };
