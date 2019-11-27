@@ -105,6 +105,6 @@ public:
     void set_current_state(double x, double y, double theta);
     void set_node_state(node &n1);
     void set_current_state(node);
-    bool next_time_step();
+    bool next_time_step(velocities &control_sig);
 
 };

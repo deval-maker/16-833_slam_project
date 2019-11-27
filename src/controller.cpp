@@ -150,7 +150,7 @@ void Controller::threshold_min_control_sig()
     }
 }
 
-bool Controller::next_time_step()
+bool Controller::next_time_step(velocities &control_sig_)
 {
     error.x = goal.x - current_state.x;
     error.y = goal.y - current_state.y;
@@ -215,28 +215,27 @@ bool Controller::next_time_step()
 
     prev_state = current_state;
 
-    // Motion Model 
-    if(Steer == drive_type)
-    {
-        current_state.x += ( control_sig.linx * dt * cos(current_state.theta));
-        current_state.y += ( control_sig.linx * dt * sin(current_state.theta));
-        current_state.theta += ( control_sig.ang * dt);
-    }
-    else if(Omni == drive_type)
-    {
-        current_state.x += ( control_sig.linx * dt );
-        current_state.y += ( control_sig.liny * dt );
-        current_state.theta += ( control_sig.ang * dt );
-    }
-    else
-    {
-        cout << "[Critical] Invalid drive type !" << endl;
-    }
-
-    // Add Noise
-    // TODO:
+    // // Motion Model 
+    // if(Steer == drive_type)
+    // {
+    //     current_state.x += ( control_sig.linx * dt * cos(current_state.theta));
+    //     current_state.y += ( control_sig.linx * dt * sin(current_state.theta));
+    //     current_state.theta += ( control_sig.ang * dt);
+    // }
+    // else if(Omni == drive_type)
+    // {
+    //     current_state.x += ( control_sig.linx * dt );
+    //     current_state.y += ( control_sig.liny * dt );
+    //     current_state.theta += ( control_sig.ang * dt );
+    // }
+    // else
+    // {
+    //     cout << "[Critical] Invalid drive type !" << endl;
+    // }
 
     last_ts = now_ts;
+
+    control_sig_ = control_sig;
 
     return is_at_goal;
 }

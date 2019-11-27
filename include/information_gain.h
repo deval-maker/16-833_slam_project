@@ -1,6 +1,22 @@
+#include <utils.h>
+#include <controller.h>
+
 point_t get_control(point_t start_state, point_t goal_state)
 {
-    return point_t();
+    point_t ret; 
+    velocities omni_velos;
+
+    Controller c1 = Controller();
+    c1.set_current_state(400.0, 600.0, 0.0);
+    c1.set_goal(406.0, 606.0, PI/2);
+
+    c1.next_time_step(omni_velos);
+
+    ret.push_back(omni_velos.linx);
+    ret.push_back(omni_velos.liny);
+    ret.push_back(omni_velos.ang);
+
+    return ret;
 }
 
 
