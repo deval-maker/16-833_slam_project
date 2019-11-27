@@ -3,7 +3,7 @@
 
 point_t get_control(point_t start_state, point_t goal_state)
 {
-    point_t ret; 
+       point_t ret; 
     velocities omni_velos;
 
     Controller c1 = Controller();
@@ -19,18 +19,21 @@ point_t get_control(point_t start_state, point_t goal_state)
     return ret;
 }
 
-
-void get_optimal_policy(vector<vector<point_t>> paths, vector<mode> modes,
+int get_optimal_policy(vector<vector<point_t>> paths, vector<mode> modes,
 MapReader* _map)
 {
     double wt_threshold = 0.2;
+    std::vector<double> information_gains;
 
     for(int i = 0; i < paths.size(); i++)
     {
         vector<point_t> path = paths[i];
-        int information_gain = 0;
+        int information_gain_policy = 0;
+
         for(int j = 0; j < modes.size(); j++)
         {
+            int information_gain_mode = 0;
+
             vector<mode> modes_copy = modes;
 
             for(int t = 0; t < path.size(); t++)
@@ -71,10 +74,15 @@ MapReader* _map)
             for(int k = 0; k < modes_copy.size(); k++)
             {
                 if(modes_copy[k].weight < wt_threshold)
-                    information_gain++;
+                    information_gain_mode++;
             }
+
+            information_gain_policy += modes[j].weight * information_gain_mode;
+
         }
+        information_gains.push_back(information_gain_policy);
     }
+    return distance(information_gains.begin(), max_element(information_gains.begin(), information_gains.end()));
 }
 
 

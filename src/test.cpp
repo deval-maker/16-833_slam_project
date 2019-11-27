@@ -68,7 +68,7 @@ void test_controller1()
 
     while(!is_goal_reached)
     {
-        is_goal_reached = c1.next_time_step();
+        // is_goal_reached = c1.next_time_step();
 
         // Sleep for 100ms 
         std::chrono::duration<int, std::milli> sleep_time(100);
@@ -108,7 +108,7 @@ void test_controller2()
     
     while(!is_goal_reached)
     {
-        is_goal_reached = c1.next_time_step();
+        // is_goal_reached = c1.next_time_step();
 
         // Sleep for 100ms 
         std::chrono::duration<int, std::milli> sleep_time(100);
@@ -148,7 +148,7 @@ void test_controller3()
     
     while(!is_goal_reached)
     {
-        is_goal_reached = c1.next_time_step();
+        // is_goal_reached = c1.next_time_step();
 
         // Sleep for 100ms 
         std::chrono::duration<int, std::milli> sleep_time(100);
@@ -187,7 +187,7 @@ void test_controller4()
     
     while(!is_goal_reached)
     {
-        is_goal_reached = c1.next_time_step();
+        // is_goal_reached = c1.next_time_step();
 
         // Sleep for 100ms 
         std::chrono::duration<int, std::milli> sleep_time(100);
@@ -234,7 +234,7 @@ void test_map_and_controller()
 
     while(!is_goal_reached)
     {
-        is_goal_reached = c1.next_time_step();
+        // is_goal_reached = c1.next_time_step();
         
         c1.set_node_state(n1);
         // cout << "x: " << n1.x  << " y: " << n1.y  << " theta: "<< n1.theta << endl;
