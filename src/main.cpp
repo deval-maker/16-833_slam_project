@@ -40,6 +40,40 @@ int main()
     mode secondMode(secondmean, sigma, weight);
     mode thirdMode(thirdmean, sigma, weight);
 
+// -------------Target state computation ------------------
+    node firstNode (1, firstmean[0], firstmean[1], firstmean[2]);
+    node secondNode (2, secondmean[0], secondmean[1], secondmean[2]);
+    node thirdNode (3, thirdmean[0], thirdmean[1], thirdmean[2]);
+
+    vector<node> Nodes{firstNode,secondNode, thirdNode}; 
+
+    node firstTarget = unq_graph->target_state(firstNode, Nodes);
+    node secondTarget = unq_graph->target_state(secondNode, Nodes);
+    node thirdTarget = unq_graph->target_state(thirdNode, Nodes);
+
+    point_t firstModePoint{firstNode.x, firstNode.y}, firstTargetPoint{firstTarget.x, firstTarget.y};
+    point_t secondModePoint{secondNode.x, secondNode.y}, secondTargetPoint{secondTarget.x, secondTarget.y};
+    point_t thirdModePoint{thirdNode.x, thirdNode.y}, thirdTargetPoint{thirdTarget.x, thirdTarget.y};
+ 
+    // map_obj->visualize_point(firstModePoint);
+    // map_obj->visualize_point(secondModePoint);
+    // map_obj->visualize_point(thirdModePoint);
+
+    // map_obj->visualize_point(firstTargetPoint);
+    // map_obj->visualize_point(secondTargetPoint);
+    // map_obj->visualize_point(thirdTargetPoint);
+// -----------------------Plan to Target State ------------------------
+
+    Search search;
+    search.set_start(firstModePoint);
+    search.set_goal(firstTargetPoint);
+    search.set_mapReader(map_obj.get());
+    vector<point_t> plan = search.plan();
+
+    for(int i = 0; i < plan.size(); i++)
+    {
+        std::cout<<plan[i][0]<<' '<<plan[i][1]<<'\n';
+    } 
 
     // Spawn Modes
 
