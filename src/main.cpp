@@ -34,11 +34,12 @@ int main()
 
     std::shared_ptr<MapReader> map_obj = std::make_shared<MapReader>(map_path);
     map_obj->visualize_map();
+    map_obj->viz_session(); //------------------Creating a session for visualisation----------------
 //------------- Uniqueness graph creation --------------------------------
     std::shared_ptr<Unique_Graph> unq_graph = std::make_shared<Unique_Graph>(map_obj, 500, 32);
 
     unq_graph->sample_vertices();
-    unq_graph->viz_graph();
+    // unq_graph->viz_graph();
 // ------------ Hardcode Modes --------------------------------------------
     Eigen::Vector3f firstmean, secondmean, thirdmean;
     firstmean << 150, 175, 0; 
@@ -74,7 +75,7 @@ int main()
     vector<point_t> visualizationPoint{firstModePoint, firstTargetPoint, secondModePoint, 
     secondTargetPoint, thirdModePoint, thirdTargetPoint};
 
-    map_obj->visualize_path(visualizationPoint);
+    map_obj->visualize_path(visualizationPoint, cv::viz::Color::blue());
     
     // map_obj->visualize_point(firstModePoint);
     // map_obj->visualize_point(secondModePoint);
@@ -112,10 +113,12 @@ int main()
         // std::cout<<"actions size "<<actions.size()<<'\n';
         vector<point_t> plan = convert_to_path(start_point, actions);
         // std::cout<<"plan size "<<plan.size()<<'\n';
-        map_obj->visualize_path(plan);
+
+        map_obj->visualize_path(visualizationPoint, cv::viz::Color::green());
         plans.push_back(actions);
     }
 
+    map_obj->clear_session();
     // Spawn Modes
 
     // Hardcode true Mode
