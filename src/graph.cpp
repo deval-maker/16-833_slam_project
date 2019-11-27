@@ -78,7 +78,7 @@ bool Unique_Graph::check_dist(node mode, node vertex)
 void::Unique_Graph::viz_graph()
 {
 
-  map->visualize_UG(vertices);
+  map->visualize_UG(vertices,cv::viz::Color::celestial_blue());
 }
 
 node Unique_Graph::target_state(node targetMode, std::vector<node> modes)

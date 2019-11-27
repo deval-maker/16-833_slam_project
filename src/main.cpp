@@ -39,7 +39,7 @@ int main()
     std::shared_ptr<Unique_Graph> unq_graph = std::make_shared<Unique_Graph>(map_obj, 500, 32);
 
     unq_graph->sample_vertices();
-    // unq_graph->viz_graph();
+    unq_graph->viz_graph();
 // ------------ Hardcode Modes --------------------------------------------
     Eigen::Vector3f firstmean, secondmean, thirdmean;
     firstmean << 150, 175, 0; 
