@@ -65,9 +65,16 @@ void mode::propagate_mode(double v, double omega,vector<meas> &gt_meas,MapReader
     mean = mean_bar;
     sigma = sigma_bar;
     // mean[0] = mean_bar[0];
+    vector<meas> measurements = map->get_landmark_measurement(mean_bar);
+
     for(int i = 0; i < gt_meas.size(); i++)
     {
         // map->getmeas(gt_meas.id, mean_bar, )
+        meas measurement;        
+        auto it = std::find(measurements.begin(), measurements.end(), gt_meas[i]);
+        if(it == measurements.end()) continue; 
+        else measurement = *it;
+
         point_t lm_position = map->get_landmark_pose(gt_meas[i].landmark_id);
         Eigen::Vector2f delta;
         delta[0] = lm_position[0] - mean_bar[0];
@@ -75,7 +82,8 @@ void mode::propagate_mode(double v, double omega,vector<meas> &gt_meas,MapReader
 
         double q = delta.transpose() * delta;
 
-        meas measurement = map->get_measurement(gt_meas[i].landmark_id, mean_bar);
+
+
         Eigen::Vector2f actual_z(measurement.dist, measurement.psi); 
 
         Eigen::Vector2f predicted_z;
@@ -92,14 +100,32 @@ void mode::propagate_mode(double v, double omega,vector<meas> &gt_meas,MapReader
     }   
 }
 
+void mode::propagate_motion(double v, double omega)
+{
+    mean_bar[0] = mean[0] + v*delT*cos(mean[2]);
+    mean_bar[1] = mean[1] + v*delT*sin(mean[2]);
+    mean_bar[2] = mean[2] + omega*delT;
+
+    Eigen::Matrix3f Gt = getGt(v,mean[2]);
+
+    Eigen::Matrix3f sigma_bar = ((Gt * sigma) * Gt.transpose()) + R; 
+
+    mean = mean_bar;
+    sigma = sigma_bar;
+
+}
+
 
 void mode::update_weight(vector<meas> &gt_meas, MapReader* map)
 {
     double distance = 0;
+    vector<meas> observed_measurements = map->get_landmark_measurement(mean);
+
     for(int i = 0; i < gt_meas.size(); i++)
     {
-        meas observed_measurement = map->get_measurement(gt_meas[i].landmark_id, mean);
-
+        auto it = std::find(observed_measurements.begin(), observed_measurements.end(), gt_meas[i]);
+        meas observed_measurement = *it;
+        
         Eigen::MatrixXf actual_z(2,1) ;
         actual_z << gt_meas[i].dist, gt_meas[i].psi;
         Eigen::MatrixXf measured_z(2,1);
