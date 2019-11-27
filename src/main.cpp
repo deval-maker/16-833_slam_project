@@ -40,11 +40,6 @@ int main()
     mode secondMode(secondmean, sigma, weight);
     mode thirdMode(thirdmean, sigma, weight);
 
-    point_t point_to_viz;
-    point_to_viz.push_back(100.0);
-    point_to_viz.push_back(200.0);
-    point_to_viz.push_back(0.0);
-    map_obj->visualize_point(point_to_viz);
 
     // Spawn Modes
 
