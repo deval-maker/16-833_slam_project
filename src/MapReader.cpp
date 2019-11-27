@@ -56,6 +56,23 @@ void MapReader::visualize_map(void)
     cv::waitKey(0);
 }
 
+void MapReader::visualize_point(point_t point)
+{
+    // add the point 
+    Point ray_pt0 = Point((int)point[0], (int)point[1]);
+
+    cv::Mat A = Mat(MAP_SIZE_X, MAP_SIZE_Y, CV_8UC3);
+    cv::Mat B = Mat(MAP_SIZE_X, MAP_SIZE_Y, CV_8UC1);
+
+    std::memcpy(B.data, _map, MAP_SIZE_X * MAP_SIZE_Y * sizeof(uint8_t));
+    cv::cvtColor(B, A, cv::COLOR_GRAY2BGR);
+
+    cv::circle(A, ray_pt0, 2, Scalar(0, 0, 255), CV_FILLED, 1, 0);
+
+    cv::imshow("SLAM Project", A);
+    cv::waitKey(0);
+}
+
 uint8_t MapReader::query_map(int i, int j)
 {
     if (i >= MAP_SIZE_X || j >= MAP_SIZE_Y || i < 0 && j < 0)

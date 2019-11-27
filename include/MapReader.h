@@ -29,6 +29,8 @@ public:
     MapReader(string src_path_map);
     
     void visualize_map(void);
+    void visualize_point(point_t);
+
     uint8_t query_map(int i, int j);
     uint8_t* get_map(void);
 
