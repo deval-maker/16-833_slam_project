@@ -9,7 +9,7 @@ Controller::Controller()
 
     last_ts = std::chrono::high_resolution_clock::now();
 
-    cout << "[Controller] Drive type: " << drive_type << endl;
+    // cout << "[Controller] Drive type: " << drive_type << endl;
 }
 
 Controller::~Controller()
@@ -25,7 +25,7 @@ void Controller::set_goal(double x, double y, double theta)
 
     last_ts = std::chrono::high_resolution_clock::now();
 
-    cout << "[Set Goal] " << goal.toStr() << endl;
+    // cout << "[Set Goal] " << goal.toStr() << endl;
 
 }
 
@@ -37,7 +37,7 @@ void Controller::set_current_state(double x, double y, double theta)
 
     prev_state = current_state;
 
-    cout << "[Set current state] " << current_state.toStr() << endl;
+    // cout << "[Set current state] " << current_state.toStr() << endl;
 }
 
 void Controller::set_current_state(node n1)
@@ -48,7 +48,7 @@ void Controller::set_current_state(node n1)
 
     prev_state = current_state;
 
-    cout << "[Set current state] " << current_state.toStr() << endl;
+    // cout << "[Set current state] " << current_state.toStr() << endl;
 }
 
 void Controller::set_node_state(node &n1)
@@ -60,7 +60,7 @@ void Controller::set_node_state(node &n1)
 
 bool Controller::is_goal_reached()
 {
-    if(fabs(error.x) <= goal_thresh.x && fabs(error.y) <= goal_thresh.y && fabs(error.theta) <= goal_thresh.theta)// 0.9 for x and y, 2 degrees for theta
+    if(fabs(error.x) <= goal_thresh.x && fabs(error.y) <= goal_thresh.y /*&& fabs(error.theta) <= goal_thresh.theta*/)// 0.9 for x and y, 2 degrees for theta
     {
         return true;
     }
@@ -149,12 +149,23 @@ void Controller::threshold_min_control_sig()
         }
     }
 }
+double wrapMax_controller(double x, double max)
+{
+    return fmod(max + fmod(x, max), max);
+}
+/* wrap x -> [min,max) */
+double wrap2pi_controller(double x)
+{
+    return -M_PI + wrapMax_controller(x + (M_PI), 2*M_PI );
+}
 
 bool Controller::next_time_step(velocities &control_sig_)
 {
     error.x = goal.x - current_state.x;
     error.y = goal.y - current_state.y;
     error.theta = goal.theta - current_state.theta;
+    cout<<"[Current Pos Error] "<<"x: "<<error.x<<" y: "<<error.y<<" Theta: "<<error.theta<<endl;
+
 
     // cout << "[Error] " << error.toStr() << endl;
     // cout << "[Current state] " << current_state.toStr() << endl;
@@ -171,21 +182,23 @@ bool Controller::next_time_step(velocities &control_sig_)
         if(Steer == drive_type)
         {
             // Vel desired
-            desired_vel.linx = sqrt( pow((error.x / dt),2)  + pow((error.y / dt),2) );
-            desired_vel.ang = error.theta / dt;
+            desired_vel.linx = pow(pow(error.x,2) + pow(error.y,2), 1.0/2);
+            desired_vel.ang = wrap2pi_controller(atan2(goal.y - current_state.y, goal.x - current_state.x));
             // cout << "[Desired Velo] " << desired_vel.toStr() << endl;
 
 
             // Get current velocities
-            current_vel.linx = sqrt( pow(( (current_state.x - prev_state.x) / dt),2)  + pow(((current_state.y - prev_state.y) / dt),2) );
-            current_vel.ang = (current_state.theta - prev_state.theta) / dt;
+            current_vel.linx = (current_state.x - prev_state.x);
+            current_vel.ang = current_state.theta;
             // cout << "[Current Velo] " << current_vel.toStr() << endl;
 
+            
 
             // Control Signal
-            control_sig.linx = (desired_vel.linx - current_vel.linx) * Kp_lx;
-            control_sig.ang = (desired_vel.ang - current_vel.ang) * Kp_a;
-            // cout << "[Control Signal] " << control_sig.toStr() << endl;
+            control_sig.linx = (desired_vel.linx) * Kp_st_lx;
+            
+            control_sig.ang = (desired_vel.ang - current_vel.ang) * Kp_st_a;
+            cout << "[Control Signal] " << control_sig.toStr() << endl;
 
         }
         else if(Omni == drive_type)
@@ -200,10 +213,8 @@ bool Controller::next_time_step(velocities &control_sig_)
             cout << "[Critical] Invalid drive type !" <<  endl;
         }
 
-        // threshold_min_control_sig();
         threshold_max_control_sig();
 
-        // cout << "[Control Signal] " << control_sig.toStr() << endl;
         
     }
     else
@@ -216,22 +227,22 @@ bool Controller::next_time_step(velocities &control_sig_)
     prev_state = current_state;
 
     // // Motion Model 
-    // if(Steer == drive_type)
-    // {
-    //     current_state.x += ( control_sig.linx * dt * cos(current_state.theta));
-    //     current_state.y += ( control_sig.linx * dt * sin(current_state.theta));
-    //     current_state.theta += ( control_sig.ang * dt);
-    // }
-    // else if(Omni == drive_type)
-    // {
-    //     current_state.x += ( control_sig.linx * dt );
-    //     current_state.y += ( control_sig.liny * dt );
-    //     current_state.theta += ( control_sig.ang * dt );
-    // }
-    // else
-    // {
-    //     cout << "[Critical] Invalid drive type !" << endl;
-    // }
+    if(Steer == drive_type)
+    {
+        current_state.x += ( control_sig.linx * dt * cos(current_state.theta));
+        current_state.y += ( control_sig.linx * dt * sin(current_state.theta));
+        current_state.theta += ( control_sig.ang * dt);
+    }
+    else if(Omni == drive_type)
+    {
+        current_state.x += ( control_sig.linx * dt );
+        current_state.y += ( control_sig.liny * dt );
+        current_state.theta += ( control_sig.ang * dt );
+    }
+    else
+    {
+        cout << "[Critical] Invalid drive type !" << endl;
+    }
 
     last_ts = now_ts;
 

@@ -8,7 +8,7 @@
 #include <test.h>
 using namespace std;
 
-bool test = false;
+bool test = true;
 
 vector<point_t> convert_to_path(point_t start_state, vector<point_t> actions)
 {
@@ -28,7 +28,11 @@ vector<point_t> convert_to_path(point_t start_state, vector<point_t> actions)
 int main()
 {
 
-    if(test) test_();
+    if(test) 
+    {
+        test_();
+        return 0;
+    }
 
 //------------- Map Reader  --------------------------------
     String map_path = "data/map3.txt";
@@ -59,6 +63,8 @@ int main()
     firstMode.visualize_ellipse(map_obj.get());
     mode secondMode(secondmean, sigma, weight);
     mode thirdMode(thirdmean, sigma, weight);
+
+    vector<mode> modes{firstMode, secondMode, thirdMode}; 
 
 // -------------Target state computation ------------------
     node firstNode (1, firstmean[0], firstmean[1], firstmean[2]);
@@ -125,7 +131,12 @@ int main()
         reverse(plans[i].begin(), plans[i].end());
     }
     map_obj->visualize_path(visualizationPoint, cv::viz::Color::red());
+// -----------------------Pick Optimal Policy ------------------------
+    get_optimal_policy(plans, modes, map_obj.get());
 
+
+
+// ----------------------- Visualisation  ------------------------
     map_obj->viz_session(); //  Creating a session for visualisation
 
 

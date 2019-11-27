@@ -121,10 +121,12 @@ void mode::update_weight(vector<meas> &gt_meas, MapReader* map)
 {
     double distance = 0;
     vector<meas> observed_measurements = map->get_landmark_measurement(mean);
-
+    int common_landmarks = 0; 
     for(int i = 0; i < gt_meas.size(); i++)
     {
         auto it = std::find(observed_measurements.begin(), observed_measurements.end(), gt_meas[i]);
+        if(it == observed_measurements.end()) continue;
+        common_landmarks += 1;
         meas observed_measurement = *it;
         
         Eigen::MatrixXf actual_z(2,1) ;
@@ -134,59 +136,12 @@ void mode::update_weight(vector<meas> &gt_meas, MapReader* map)
 
         distance += ((actual_z - measured_z).transpose() * R.inverse() * (actual_z - measured_z)).value();  
     }
-
+    if(common_landmarks > 0) std::cout<<"distance is "<<distance<<'\n';
     weight *= exp(-0.5*distance);
 }
 
 void mode::visualize_ellipse(MapReader* map)
 {
-
-    // Compute eigen vectors
-
-    // Matrix2f A;
-
-    // A << sig_x * sig_x, rho * sig_x * sig_y, rho * sig_x * sig_y, sig_y * sig_y;
-
     map->visualize_ellipse(mean.block<2,1>(0,0), sigma.block<2,2>(0,0));
-
-    // SelfAdjointEigenSolver<Matrix2f> eigensolver(sigma.block<0,0>(2,2));
-    // if (eigensolver.info() != Success)
-    //     {
-    //         std::cout<<"Problem with Eigen vector computation \n";
-    //         return ;
-    //     }
-
-    // // find angle of eigvector fo largest eigen value
-    // double theta = atan2(eigensolver.eigenvectors()(1, 0), eigensolver.eigenvectors()(0, 0));
-    // cout << "theta of ellipse" << theta << endl;
-
-    ////cout <<  eigensolver.eigenvectors() << endl;
-
-
-    // ell.type = 2; // 1 for cube
-    // ell.action = visualization_msgs::Marker::ADD;
-    // ell.pose.position.x = mu_x;
-    // ell.pose.position.y = mu_y;
-    // ell.pose.position.z = 0;
-    // /*  ell.pose.orientation.x = 0;
-    // ell.pose.orientation.y = 0;
-    // ell.pose.orientation.z = 0;
-    // ell.pose.orientation.w = 1;*/
-    // ell.pose.orientation.x = 0;
-    // ell.pose.orientation.y = 0;
-    // ell.pose.orientation.z = sin(theta / 2) * 1;
-    // ell.pose.orientation.w = cos(theta / 2);
-
-    // // confidence interval ellipse axis scale
-    // ell.scale.x = 2 * sqrt(confidence_interval * eigensolver.eigenvalues()(0));
-    // ell.scale.y = 2 * sqrt(confidence_interval * eigensolver.eigenvalues()(1));
-    // // ell.scale.x = 5;
-    // // ell.scale.y = 5;
-    // ell.scale.z = 0.2;
-    // ell.color.a = 0.4; // Don't forget to set the alpha!
-    // ell.color.r = 1.0;
-    // ell.color.g = 0.0;
-    // ell.color.b = 1.0;
-
 }
 

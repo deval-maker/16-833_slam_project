@@ -63,6 +63,7 @@ class Controller
 private:
     state_vector goal;
     state_vector error;
+    state_vector prev_error;
     state_vector prev_state;
 
     std::chrono::high_resolution_clock::time_point last_ts;
@@ -79,6 +80,10 @@ private:
     double Kd_ly = 0;
     double Kd_a = 0;
 
+// Steer controller 
+    double Kp_st_lx = 0.15;
+    double Kp_st_a = 10;
+
     bool is_goal_reached();
     void threshold_max_control_sig();
     void threshold_min_control_sig();
@@ -91,7 +96,7 @@ public:
         Omni
     };
 
-    state_vector goal_thresh = state_vector(0.35, 0.35, (2*PI)/180.0);
+    state_vector goal_thresh = state_vector(0.9, 0.9, (2*PI)/180.0);
     velocities vel_max_thresh = velocities(15.0, 15.0, 1.5);
     velocities vel_min_thresh = velocities(0.1, 0.1, 0.01);
 

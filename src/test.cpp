@@ -268,49 +268,94 @@ void test_map_and_controller()
     cout << "[Current state] " << c1.current_state.toStr() << endl;
 }
 
+void test_steer_controller()
+{
+    std::cout<<"Testing steer controller \n";
+    String map_path = "data/map2.txt";
+    MapReader map_obj = MapReader(map_path);
+    node n1 = node(1, 400, 600, 0);
+    Controller c1 = Controller();
+    
+    c1.set_current_state(n1);
+    c1.set_goal(100.0, 830.0, 0.0);
+    c1.drive_type = Controller::Steer;
+
+    bool is_goal_reached = false;
+    auto start = std::chrono::high_resolution_clock::now();
+    double time_elapsed = 0.0;
+    velocities steer_velocities;
+
+    map_obj.update_visible_landmarks(n1, true);
+    int before =  n1.visible_landmarks.size();
+    cout << "Visible Landmarks in the begining: " << before << endl;
+
+    while(!is_goal_reached)
+    {
+        is_goal_reached = c1.next_time_step(steer_velocities);
+        
+        c1.set_node_state(n1);
+        // cout << "x: " << n1.x  << " y: " << n1.y  << " theta: "<< n1.theta << endl;
+
+        map_obj.update_visible_landmarks(n1, true);
+        // cout << "Visible Landmarks: " << n1.visible_landmarks.size() << endl;
+
+        // Sleep for 100ms 
+        std::chrono::duration<int, std::milli> sleep_time(100);
+        std::this_thread::sleep_for(sleep_time);
+
+        time_elapsed = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - start).count();
+        // if(time_elapsed > 35.0)
+        // {
+        //     std::cout<<"Time ran out \n";
+        //     break;
+        // }
+    }
+
+}
 
 void test_()
 {
-    test_raycast1();
-    test_raycast2();
-    test_raycast3();
+    test_steer_controller();
+    // test_raycast1();
+    // test_raycast2();
+    // test_raycast3();
 
-    test_controller1();
-    test_controller2();
-    test_controller3();
-    test_controller4();
+    // test_controller1();
+    // test_controller2();
+    // test_controller3();
+    // test_controller4();
 
-    test_map_and_controller();
+    // test_map_and_controller();
 
-    String map_path = "data/map2.txt";
+    // String map_path = "data/map2.txt";
 
-    std::shared_ptr<MapReader> map_obj = std::make_shared<MapReader>(map_path);
-    // map_obj->visualize_map();
+    // std::shared_ptr<MapReader> map_obj = std::make_shared<MapReader>(map_path);
+    // // map_obj->visualize_map();
 
-    std::shared_ptr<Unique_Graph> unq_graph = std::make_shared<Unique_Graph>(map_obj, 10000, 32);
+    // std::shared_ptr<Unique_Graph> unq_graph = std::make_shared<Unique_Graph>(map_obj, 10000, 32);
 
-    unq_graph->sample_vertices();
+    // unq_graph->sample_vertices();
 
-    auto mat = unq_graph->adjacency_mat;
+    // auto mat = unq_graph->adjacency_mat;
 
-    auto pt = unq_graph->knn_tree.nearest_point({1, 2, 3});
+    // auto pt = unq_graph->knn_tree.nearest_point({1, 2, 3});
 
-    auto near_node = unq_graph->node_map[pt];
+    // auto near_node = unq_graph->node_map[pt];
 
-    Search search;
-    point_t start{1, 4};
-    point_t goal{10, 10};
-    search.set_start(start);
-    search.set_goal(goal);
+    // Search search;
+    // point_t start{1, 4};
+    // point_t goal{10, 10};
+    // search.set_start(start);
+    // search.set_goal(goal);
 
-    std::vector<point_t> path = search.plan();
-    std::cout << "Path \n";
-    for (int i = 0; i < path.size(); i++)
-    {
-        for (int j = 0; j < path[i].size(); j++)
-        {
-            std::cout << path[i][j] << ' ';
-        }
-        std::cout << '\n';
-    }
+    // std::vector<point_t> path = search.plan();
+    // std::cout << "Path \n";
+    // for (int i = 0; i < path.size(); i++)
+    // {
+    //     for (int j = 0; j < path[i].size(); j++)
+    //     {
+    //         std::cout << path[i][j] << ' ';
+    //     }
+    //     std::cout << '\n';
+    // }
 }
