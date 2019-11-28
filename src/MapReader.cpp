@@ -26,13 +26,13 @@ MapReader::MapReader(string src_path_map)
 
     // cout << "Finished reading 2D map of size : (" << line_number << "," << j << ")" << endl;
 
-    
+
     // Add Landmarks in the lookup
     point_t landmark_pose;
 
     // X
     landmark_pose.push_back(400);
-    // Y 
+    // Y
     landmark_pose.push_back(900);
     // Add to lookup
     landmark_lookup.push_back(landmark_pose);
@@ -41,7 +41,7 @@ MapReader::MapReader(string src_path_map)
 
     // X
     landmark_pose.push_back(200);
-    // Y 
+    // Y
     landmark_pose.push_back(600);
     // Add to lookup
     landmark_lookup.push_back(landmark_pose);
@@ -85,9 +85,9 @@ void MapReader::visualize_ellipse(Eigen::Vector2f mean, Eigen::Matrix2f sigma)
 
     // find angle of eigvector fo largest eigen value
     double theta = atan2(double(eigensolver.eigenvectors()(1, 0)), double(eigensolver.eigenvectors()(0, 0)));
-    cout << "theta of ellipse" << theta << endl;
-    double factor = 300;
-    std::cout<<"Axes length "<<factor*sqrt(0.5991*eigensolver.eigenvalues()(1,0))<<" "<<factor*sqrt(0.5991*eigensolver.eigenvalues()(0,0))<<'\n';
+    // cout << "theta of ellipse" << theta << endl;
+    double factor = 1;
+    // std::cout<<"Axes length "<<factor*sqrt(0.5991*eigensolver.eigenvalues()(1,0))<<" "<<factor*sqrt(0.5991*eigensolver.eigenvalues()(0,0))<<'\n';
     cv::ellipse(A, Point(mean[0], mean[1]), Size(factor*sqrt(0.5991*eigensolver.eigenvalues()(1,0)), factor*sqrt(0.5991*eigensolver.eigenvalues()(0,0))), to_degree(theta), 0, 360, Scalar(255,0,0), 3, 8);
 }
 
@@ -97,14 +97,14 @@ void MapReader::clear_session()
     B = Mat(MAP_SIZE_X, MAP_SIZE_Y, CV_8UC1);
 
     std::memcpy(B.data, _map, MAP_SIZE_X * MAP_SIZE_Y * sizeof(uint8_t));
-    cv::cvtColor(B, A, cv::COLOR_GRAY2BGR);  
+    cv::cvtColor(B, A, cv::COLOR_GRAY2BGR);
 }
 
 void MapReader::viz_session()
 {
     cv::imshow("SLAM Project", A);
     cv::waitKey(0);
-} 
+}
 
 void MapReader::visualize_UG(vector<node> ug, cv::viz::Color color)
 {
@@ -187,7 +187,7 @@ void MapReader::update_visible_landmarks(node &x_t, bool visualize)
             {
                 if(hit_point != 0)
                 {
-                    // Add to the list of visible landmarks 
+                    // Add to the list of visible landmarks
                     x_t.visible_landmarks.insert(hit_point);
                 }
 
@@ -233,7 +233,7 @@ vector<meas> MapReader::get_landmark_measurement(Eigen::Vector3f curr_pose)
     vector<meas> ret;
     std::unordered_set<int> visible_landmarks;
     bool visualize = false;
-    
+
     double curr_orient = curr_pose[2];
     curr_orient = correct_range(curr_orient);
 
@@ -285,7 +285,7 @@ vector<meas> MapReader::get_landmark_measurement(Eigen::Vector3f curr_pose)
                     {
                         ret.push_back(measurement);
                     }
-                    // Add to the list of visible landmarks 
+                    // Add to the list of visible landmarks
                     visible_landmarks.insert(hit_point);
                 }
 
@@ -335,7 +335,7 @@ point_t MapReader::get_landmark_pose(int landmark_id)
     {
         ret.push_back(-1);
         ret.push_back(-1);
-        cout << "[Error MapReader] Wrong query !" << endl; 
+        cout << "[Error MapReader] Wrong query !" << endl;
 
     }
     else

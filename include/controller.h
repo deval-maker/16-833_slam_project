@@ -82,7 +82,11 @@ private:
 
 // Steer controller
     // double Kp_st_lx = 0.90;
-    double Kp_st_lx = 30;
+    // For path
+    // double Kp_st_lx = 30;
+    // double Kp_st_a = 10;
+    // For actions
+    double Kp_st_lx = 0.05;
     double Kp_st_a = 10;
 
     bool is_goal_reached();

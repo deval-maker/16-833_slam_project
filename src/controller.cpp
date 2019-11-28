@@ -25,7 +25,7 @@ void Controller::set_goal(double x, double y, double theta)
 
     last_ts = std::chrono::high_resolution_clock::now();
 
-    cout << "[Set Goal] " << goal.toStr() << endl;
+    // cout << "[Set Goal] " << goal.toStr() << endl;
 
 }
 
@@ -221,7 +221,7 @@ bool Controller::next_time_step(velocities &control_sig_)
     {
         control_sig.linx = 0.0;
         control_sig.ang = 0.0;
-        cout << "[Controller] Goal reached." << endl;
+        // cout << "[Controller] Goal reached." << endl;
     }
 
     prev_state = current_state;
@@ -229,11 +229,7 @@ bool Controller::next_time_step(velocities &control_sig_)
     // // Motion Model
     if(Steer == drive_type)
     {
-        // std::cout<<"control signal "<<control_sig.linx<<'\n';
-        // std::cout<<cos(current_state.theta)<<" "<<current_state.theta<<'\n';
-        // std::cout<<dt<<'\n';
         dt = 0.1;
-        std::cout<<control_sig.linx * dt * cos(current_state.theta)<<'\n';
         current_state.x += ( control_sig.linx * dt * cos(current_state.theta));
         current_state.y += ( control_sig.linx * dt * sin(current_state.theta));
         current_state.theta += ( control_sig.ang * dt);
