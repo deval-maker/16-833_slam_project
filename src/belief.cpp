@@ -116,6 +116,42 @@ void mode::propagate_motion(double v, double omega)
 
 }
 
+        
+void mode::update_measurement(vector<meas> &gt_meas, MapReader* map)
+{
+    vector<meas> measurements = map->get_landmark_measurement(mean);
+
+    for(int i = 0; i < gt_meas.size(); i++)
+    {
+        // map->getmeas(gt_meas.id, mean_bar, )
+        meas measurement;        
+        auto it = std::find(measurements.begin(), measurements.end(), gt_meas[i]);
+        if(it == measurements.end()) continue; 
+        else measurement = *it;
+
+        point_t lm_position = map->get_landmark_pose(gt_meas[i].landmark_id);
+        Eigen::Vector2f delta;
+        delta[0] = lm_position[0] - mean[0];
+        delta[1] = lm_position[1] - mean[1];
+
+        double q = delta.transpose() * delta;
+
+        Eigen::Vector2f actual_z(measurement.dist, measurement.psi); 
+
+        Eigen::Vector2f predicted_z;
+        predicted_z[0] = sqrt(q);
+        predicted_z[1] = wrap2pi(atan2(delta[1],delta[0]) - mean[2]);
+
+        Eigen::MatrixXf Ht = getHt(q, delta);
+
+        Eigen::MatrixXf Kt(3,2);
+        Kt = sigma * Ht.transpose() * (Ht * sigma * Ht.transpose() + Q).inverse();
+
+        mean = mean.eval() + Kt * (actual_z - predicted_z);  
+        sigma = sigma.eval() - Kt * Ht * sigma;
+    }   
+
+}
 
 void mode::update_weight(vector<meas> &gt_meas, MapReader* map)
 {

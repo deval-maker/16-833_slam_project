@@ -1,22 +1,46 @@
 #include <utils.h>
 #include <controller.h>
 
-point_t get_control(point_t start_state, point_t goal_state)
+vector<point_t> get_control(point_t start_state, point_t goal_state)
 {
-       point_t ret; 
-    velocities omni_velos;
+    vector<point_t> controls;
+    point_t ret; 
+    velocities steer_velos;
+    node n1 = node(1,start_state[0],start_state[1],start_state[2]);
 
     Controller c1 = Controller();
-    c1.set_current_state(400.0, 600.0, 0.0);
-    c1.set_goal(406.0, 606.0, PI/2);
+    c1.set_current_state(n1);
+    c1.set_goal(goal_state[0], goal_state[1], goal_state[2]);
+    c1.drive_type = Controller::Steer;
+    bool is_goal_reached = false;
+    auto start = std::chrono::high_resolution_clock::now();
+    double time_elapsed = 0.0;
 
-    c1.next_time_step(omni_velos);
+   
+    while(!is_goal_reached)
+    {   
+        
+        point_t step_vels;
+        is_goal_reached = c1.next_time_step(steer_velos);
+        
+        c1.set_node_state(n1);
+        step_vels.push_back(steer_velos.linx);
+        step_vels.push_back(steer_velos.liny);
+        step_vels.push_back(steer_velos.ang);
+        controls.push_back(step_vels);
 
-    ret.push_back(omni_velos.linx);
-    ret.push_back(omni_velos.liny);
-    ret.push_back(omni_velos.ang);
+        // map_obj.update_visible_landmarks(n1, true);
+         
+        std::chrono::duration<int, std::milli> sleep_time(100);
+        std::this_thread::sleep_for(sleep_time);
 
-    return ret;
+        time_elapsed = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - start).count();
+
+        
+    }
+
+
+    return controls;
 }
 
 int get_optimal_policy(vector<vector<point_t>> paths, vector<mode> modes,
@@ -50,8 +74,11 @@ MapReader* _map)
                 goal_state.push_back(path[t][0] + modes_copy[j].mean[0]);
                 goal_state.push_back(path[t][1] + modes_copy[j].mean[1]);
 
-                point_t control = get_control(start_state, goal_state);
-                modes_copy[j].propagate_motion(control[0], control[1]);
+                vector<point_t> controls = get_control(start_state, goal_state);
+                for(auto control: controls){
+                    modes_copy[j].propagate_motion(control[0], control[1]);
+    
+                }
                 std::cout<<"Mean of j: "<<modes_copy[j].mean[0]<<" "<<modes_copy[j].mean[1]<<" "<<
                 modes_copy[j].mean[2]<<'\n';
                 
@@ -71,8 +98,13 @@ MapReader* _map)
                     goal_state.push_back(path[t][0] + modes_copy[k].mean[0]);
                     goal_state.push_back(path[t][1] + modes_copy[k].mean[1]);
 
-                    point_t control = get_control(start_state, goal_state);
-                    modes_copy[k].propagate_mode(control[0], control[1], actual_meas, _map);
+                    vector<point_t> controls = get_control(start_state, goal_state);
+
+                    for(auto control: controls){
+                        modes_copy[k].propagate_motion(control[0], control[1]);
+                       
+                    }
+                    modes_copy[k].update_measurement(actual_meas,_map);
                     modes_copy[k].update_weight(actual_meas, _map);
                 }
             }

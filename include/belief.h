@@ -17,6 +17,7 @@ class mode{
         Eigen::Matrix2f Q;
         void propagate_mode(double v, double omega,vector<meas> &gt_meas,MapReader* map );
         void propagate_motion(double v, double omega);
+        void update_measurement(vector<meas> &gt_meas, MapReader* map);
         void update_weight(vector<meas> &gt_meas,MapReader* map);
         mode();
         mode(Eigen::Vector3f mean, Eigen::Matrix3f sigma,int weight);
