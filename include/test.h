@@ -5,7 +5,6 @@
 #include <controller.h>
 #include <search.h>
 #include <graph.h>
-#include <information_gain.h>
 
 
 void test_raycast1();

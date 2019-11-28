@@ -1,7 +1,7 @@
 #include <utils.h>
 #include <controller.h>
 
-vector<point_t> get_control(point_t start_state, point_t goal_state)
+vector<point_t> get_control(point_t start_state, point_t goal_state, MapReader* map_obj)
 {
     vector<point_t> controls;
     point_t ret; 
@@ -25,16 +25,10 @@ vector<point_t> get_control(point_t start_state, point_t goal_state)
         
         c1.set_node_state(n1);
         step_vels.push_back(steer_velos.linx);
-        step_vels.push_back(steer_velos.liny);
         step_vels.push_back(steer_velos.ang);
         controls.push_back(step_vels);
 
-        // map_obj.update_visible_landmarks(n1, true);
-         
-        std::chrono::duration<int, std::milli> sleep_time(100);
-        std::this_thread::sleep_for(sleep_time);
-
-        time_elapsed = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - start).count();
+        // map_obj->update_visible_landmarks(n1, true);
 
         
     }
@@ -74,7 +68,7 @@ MapReader* _map)
                 goal_state.push_back(path[t][0] + modes_copy[j].mean[0]);
                 goal_state.push_back(path[t][1] + modes_copy[j].mean[1]);
 
-                vector<point_t> controls = get_control(start_state, goal_state);
+                vector<point_t> controls = get_control(start_state, goal_state, _map);
                 for(auto control: controls){
                     modes_copy[j].propagate_motion(control[0], control[1]);
     
@@ -98,7 +92,7 @@ MapReader* _map)
                     goal_state.push_back(path[t][0] + modes_copy[k].mean[0]);
                     goal_state.push_back(path[t][1] + modes_copy[k].mean[1]);
 
-                    vector<point_t> controls = get_control(start_state, goal_state);
+                    vector<point_t> controls = get_control(start_state, goal_state, _map);
 
                     for(auto control: controls){
                         modes_copy[k].propagate_motion(control[0], control[1]);

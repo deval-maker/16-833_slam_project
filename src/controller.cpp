@@ -167,7 +167,7 @@ bool Controller::next_time_step(velocities &control_sig_)
     // cout<<"[Current Pos Error] "<<"x: "<<error.x<<" y: "<<error.y<<" Theta: "<<error.theta<<endl;
 
 
-    cout << "[Error] " << error.toStr() << endl;
+    // cout << "[Error] " << error.toStr() << endl;
     // cout << "[Current state] " << current_state.toStr() << endl;
     // cout << "[Prev state] " << prev_state.toStr() << endl;
 
@@ -198,7 +198,7 @@ bool Controller::next_time_step(velocities &control_sig_)
             control_sig.linx = (desired_vel.linx) * Kp_st_lx;
 
             control_sig.ang = (desired_vel.ang - current_vel.ang) * Kp_st_a;
-            cout << "[Control Signal] " << control_sig.toStr() << endl;
+            // cout << "[Control Signal] " << control_sig.toStr() << endl;
 
         }
         else if(Omni == drive_type)
