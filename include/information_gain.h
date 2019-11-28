@@ -98,8 +98,10 @@ MapReader* _map)
                 }
                 // std::cout<<"Mean of j: "<<modes_copy[j].mean[0]<<" "<<modes_copy[j].mean[1]<<" "<<
                 // modes_copy[j].mean[2]<<'\n';
-
+                // std::cout<<"Visualizing j ellipse \n";
                 modes_copy[j].visualize_ellipse(_map);
+
+                // std::cout<<"\n Visualizing k ellipses \n";
 
                 Eigen::Vector3f pose_mode_j = modes_copy[j].mean;
                 vector<meas> actual_meas = _map->get_landmark_measurement(pose_mode_j);
@@ -123,7 +125,7 @@ MapReader* _map)
                 
                     }
                     modes_copy[k].visualize_ellipse(_map);
-                    // modes_copy[k].update_measurement(actual_meas,_map);
+                    modes_copy[k].update_measurement(actual_meas,_map);
                 //     modes_copy[k].update_weight(actual_meas, _map);
                 }
                 _map->viz_session();

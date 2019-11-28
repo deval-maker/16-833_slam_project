@@ -36,7 +36,7 @@ Eigen::MatrixXf mode::getHt(double q, Eigen::Vector2f delta)
 {
     Eigen::MatrixXf matrix(2,3);
     matrix<<delta[0]/sqrt(q), -delta[1]/sqrt(q), 0,
-            delta[0]/q,          delta[1]/q,        -1;
+            delta[1]/q,          delta[0]/q,        -1;
 
     return matrix;
 }
@@ -134,26 +134,45 @@ void mode::update_measurement(vector<meas> &gt_meas, MapReader* map)
         if(it == measurements.end()) continue;
         else measurement = *it;
 
+
+        std::cout<<"Gt measurement "<<gt_meas[i].landmark_id<<" "<<gt_meas[i].dist<<" "<<
+        gt_meas[i].psi<<'\n';
+
+        std::cout<<"Observed measurements "<<measurement.landmark_id<<" "<<measurement.dist<<" "<<
+        measurement.psi<<'\n';
+
         point_t lm_position = map->get_landmark_pose(gt_meas[i].landmark_id);
         Eigen::Vector2f delta;
+
+        std::cout<<"Actual landmark pose "<<lm_position[0]<<" "<<lm_position[1]<<'\n';
         delta[0] = lm_position[0] - mean[0];
         delta[1] = lm_position[1] - mean[1];
 
         double q = delta.transpose() * delta;
 
-        Eigen::Vector2f actual_z(measurement.dist, measurement.psi);
+        std::cout<<"Q value "<<q<<"\n";
+
+        Eigen::Vector2f actual_z(gt_meas[i].dist, gt_meas[i].psi);
+        Eigen::Vector2f observed_z(measurement.dist, measurement.psi);
 
         Eigen::Vector2f predicted_z;
         predicted_z[0] = sqrt(q);
-        predicted_z[1] = wrap2pi(atan2(delta[1],delta[0]) - mean[2]);
+        predicted_z[1] = wrap2pi(wrap2pi(atan2(delta[1],delta[0])) - mean[2]);
+
+
 
         Eigen::MatrixXf Ht = getHt(q, delta);
 
         Eigen::MatrixXf Kt(3,2);
         Kt = sigma * Ht.transpose() * (Ht * sigma * Ht.transpose() + Q).inverse();
 
-        mean = mean.eval() + Kt * (actual_z - predicted_z);
-        sigma = sigma.eval() - Kt * Ht * sigma;
+        std::cout<<"Actual Z "<<actual_z[0]<<" "<<actual_z[1]<<'\n';
+        std::cout<<"Observed Z "<<observed_z[0]<<" "<<observed_z[1]<<'\n';
+        std::cout<<"Predicted Z "<<predicted_z[0]<<" "<<predicted_z[1]<<'\n';
+
+        mean = mean.eval() + Kt * (observed_z - actual_z);
+        sigma = sigma.eval() - Kt * Ht * sigma.eval();
+        std::cout<<'\n';
     }
 
 }

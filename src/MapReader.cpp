@@ -33,16 +33,32 @@ MapReader::MapReader(string src_path_map)
     // X
     landmark_pose.push_back(400);
     // Y
-    landmark_pose.push_back(900);
+    landmark_pose.push_back(200);
     // Add to lookup
     landmark_lookup.push_back(landmark_pose);
 
-    landmark_pose.clear();
-
     // X
-    landmark_pose.push_back(200);
+    landmark_pose[0] = 500;
     // Y
-    landmark_pose.push_back(600);
+    landmark_pose[1] = 500;
+    // Add to lookup
+    landmark_lookup.push_back(landmark_pose);
+    // X
+    landmark_pose[0] = 400;
+    // Y
+    landmark_pose[1] = 900;
+    // Add to lookup
+    landmark_lookup.push_back(landmark_pose);
+    // X
+    landmark_pose[0] = 900;
+    // Y
+    landmark_pose[1] = 400;
+    // Add to lookup
+    landmark_lookup.push_back(landmark_pose);
+    // X
+    landmark_pose[0] = 100;
+    // Y
+    landmark_pose[1] = 400;
     // Add to lookup
     landmark_lookup.push_back(landmark_pose);
 }
@@ -76,6 +92,17 @@ double to_degree(double radian)
 
 void MapReader::visualize_ellipse(Eigen::Vector2f mean, Eigen::Matrix2f sigma)
 {
+    // std::cout<<"Sigma \n";
+    // for(int i = 0; i < 2; i++)
+    // {
+    //     for(int j = 0; j < 2; j++)
+    //     {
+    //         std::cout<<sigma(i,j)<<" ";            
+    //     }
+    //     std::cout<<"\n";
+    // }
+    // std::cout<<"\n\n";
+
     Eigen::SelfAdjointEigenSolver<Eigen::Matrix2f> eigensolver(sigma);
     if (eigensolver.info() != Eigen::Success)
         {
@@ -330,7 +357,6 @@ vector<meas> MapReader::get_landmark_measurement(Eigen::Vector3f curr_pose)
 point_t MapReader::get_landmark_pose(int landmark_id)
 {
     point_t ret;
-
     if(landmark_id > landmark_lookup.size())
     {
         ret.push_back(-1);
