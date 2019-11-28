@@ -5,6 +5,8 @@
 #include <controller.h>
 #include <search.h>
 #include <graph.h>
+
+
 void test_raycast1();
 void test_raycast2();
 void test_raycast3();

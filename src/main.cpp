@@ -8,7 +8,7 @@
 #include <test.h>
 using namespace std;
 
-bool test = true;
+bool test = false;
 
 vector<point_t> convert_to_path(point_t start_state, vector<point_t> actions)
 {
@@ -131,9 +131,15 @@ int main()
     }
     map_obj->visualize_path(visualizationPoint, cv::viz::Color::red());
 // -----------------------Pick Optimal Policy ------------------------
-    get_optimal_policy(plans, modes, map_obj.get());
+    // get_optimal_policy(plans, modes, map_obj.get());
+    // point_t start_point{100, 400}, goal_point{200, 600};
+    // vector<point_t> actions = get_control(start_point, goal_point, map_obj.get());
 
-
+    // for(int i = 0; i< actions.size(); i++)
+    // {
+    //     std::cout<<actions[i][0]<<" "<<actions[i][1]<<'\n';
+    // }
+    get_optimal_policy(plans,modes,map_obj.get());
 
 // ----------------------- Visualisation  ------------------------
     map_obj->viz_session(); //  Creating a session for visualisation
