@@ -127,8 +127,8 @@ void MapReader::visualize_ellipse(Eigen::Vector2f mean, Eigen::Matrix2f sigma)
     //     b = 0;
     // }
 
-    std::cout<<"Eigs "<<a<<" "<<b<<"\n";
-    std::cout<<"Axes length "<<factor*sqrt(0.5991*a)<<" "<<factor*sqrt(0.5991*b)<<'\n';
+    // std::cout<<"Eigs "<<a<<" "<<b<<"\n";
+    // std::cout<<"Axes length "<<factor*sqrt(0.5991*a)<<" "<<factor*sqrt(0.5991*b)<<'\n';
 
     cv::ellipse(A, Point(mean[0], mean[1]), Size(factor*sqrt(0.5991*a), factor*sqrt(0.5991*b)), to_degree(theta), 0, 360, Scalar(255,0,0), 3, 8);
 }

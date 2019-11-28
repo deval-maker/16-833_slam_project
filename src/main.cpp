@@ -9,7 +9,7 @@
 #include <test.h>
 using namespace std;
 
-bool test = true;
+bool test = false;
 
 vector<point_t> convert_to_path(point_t start_state, vector<point_t> actions)
 {

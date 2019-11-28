@@ -107,12 +107,12 @@ MapReader* _map)
                 Eigen::Vector3f pose_mode_j = modes_copy[j].mean;
                 vector<meas> actual_meas = _map->get_landmark_measurement(pose_mode_j);
                 
-                for(int k = 0; k < 1; k++)
+                for(int k = 0; k < modes_copy.size(); k++)
                 {
-                    //if(k == j) continue;
+                    if(k == j) continue;
                 //  
-                    std::cout<<" "<<"\n";
-                    std::cout<<"[DEBUG] Propogating mode "<<k<<std::endl;
+                    // std::cout<<" "<<"\n";
+                    // std::cout<<"[DEBUG] Propogating mode "<<k<<std::endl;
                     point_t start_state, goal_state;
                     start_state.push_back(modes_copy[k].mean[0]);
                     start_state.push_back(modes_copy[k].mean[1]);
