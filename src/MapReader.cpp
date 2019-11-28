@@ -92,16 +92,16 @@ double to_degree(double radian)
 
 void MapReader::visualize_ellipse(Eigen::Vector2f mean, Eigen::Matrix2f sigma)
 {
-    std::cout<<"Sigma \n";
-    for(int i = 0; i < 2; i++)
-    {
-        for(int j = 0; j < 2; j++)
-        {
-            std::cout<<sigma(i,j)<<" ";            
-        }
-        std::cout<<"\n";
-    }
-    std::cout<<"\n\n";
+    // std::cout<<"Sigma \n";
+    // for(int i = 0; i < 2; i++)
+    // {
+    //     for(int j = 0; j < 2; j++)
+    //     {
+    //         std::cout<<sigma(i,j)<<" ";
+    //     }
+    //     std::cout<<"\n";
+    // }
+    // std::cout<<"\n\n";
 
     Eigen::SelfAdjointEigenSolver<Eigen::Matrix2f> eigensolver(sigma);
     if (eigensolver.info() != Eigen::Success)
@@ -114,19 +114,19 @@ void MapReader::visualize_ellipse(Eigen::Vector2f mean, Eigen::Matrix2f sigma)
     double theta = atan2(double(eigensolver.eigenvectors()(1, 0)), double(eigensolver.eigenvectors()(0, 0)));
     // cout << "theta of ellipse" << theta << endl;
     double factor = 1;
-    double a = eigensolver.eigenvalues()(1,0); 
+    double a = eigensolver.eigenvalues()(1,0);
     // if(isnan(a) || a <= 0)
     // {
     //     std::cout<<"A is nan \n";
     //     a = 0;
     // }
-    double b = eigensolver.eigenvalues()(0,0); 
+    double b = eigensolver.eigenvalues()(0,0);
     // if(isnan(b) || b <= 0)
     // {
     //     std::cout<<"B is nan \n";
     //     b = 0;
     // }
-    std::cout<<"Axes length "<<factor*sqrt(0.5991*a)<<" "<<factor*sqrt(0.5991*b)<<'\n';
+    // std::cout<<"Axes length "<<factor*sqrt(0.5991*a)<<" "<<factor*sqrt(0.5991*b)<<'\n';
 
     cv::ellipse(A, Point(mean[0], mean[1]), Size(factor*sqrt(0.5991*a), factor*sqrt(0.5991*b)), to_degree(theta), 0, 360, Scalar(255,0,0), 3, 8);
 }
