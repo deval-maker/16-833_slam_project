@@ -1,3 +1,6 @@
+#ifndef BELIEF_H
+#define BELIEF_H
+
 #include<iostream>
 #include<MapReader.h>
 #include<eigen3/Eigen/Dense>
@@ -14,13 +17,14 @@ class mode{
         double delT;
         double weight;
         Eigen::Matrix3f R;
+        Eigen::Matrix2f GMM_R;
         Eigen::Matrix2f Q;
         void propagate_mode(double v, double omega,vector<meas> &gt_meas,MapReader* map );
         void propagate_motion(double v, double omega);
         void update_measurement(vector<meas> &gt_meas, MapReader* map);
         void update_weight(vector<meas> &gt_meas,MapReader* map);
         mode();
-        mode(Eigen::Vector3f mean, Eigen::Matrix3f sigma,int weight);
+        mode(Eigen::Vector3f mean, Eigen::Matrix3f sigma,double weight);
         Eigen::Matrix3f getGt(double v, double theta);
         Eigen::MatrixXf getHt(double q, Eigen::Vector2f delta);
         void visualize_ellipse(MapReader* map);
@@ -31,5 +35,7 @@ class mode{
 
 
 
-    
+
 };
+
+#endif

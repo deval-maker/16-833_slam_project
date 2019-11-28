@@ -5,6 +5,7 @@
 #include <controller.h>
 #include <search.h>
 #include <graph.h>
+#include <belief.h>
 
 
 void test_raycast1();

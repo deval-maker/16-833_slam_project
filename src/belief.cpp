@@ -5,15 +5,23 @@ mode::mode(){
     R << 0.00, 0, 0,
          0, 0.00, 0,
          0, 0, 0.00;
+
+   GMM_R << 0.3, 0,
+            0, 70;
+
     Q << 0.00, 0,
          0, 0.00;
+
     delT = 0.1;
 }
-mode::mode(Eigen::Vector3f mean, Eigen::Matrix3f sigma,int weight)
+mode::mode(Eigen::Vector3f mean, Eigen::Matrix3f sigma, double weight)
 {
     R << 0.00, 0, 0,
         0, 0.00, 0,
         0, 0, 0.00;
+
+    GMM_R << 0.3, 0,
+             0, 100;
 
     Q << 0.00, 0,
          0, 0.00;
@@ -194,21 +202,30 @@ void mode::update_weight(vector<meas> &gt_meas, MapReader* map)
     double distance = 0;
     vector<meas> observed_measurements = map->get_landmark_measurement(mean);
     int common_landmarks = 0;
+
     for(int i = 0; i < gt_meas.size(); i++)
     {
         auto it = std::find(observed_measurements.begin(), observed_measurements.end(), gt_meas[i]);
         if(it == observed_measurements.end()) continue;
+
+        // std::cout<<"Common Landmark \n";
         common_landmarks += 1;
         meas observed_measurement = *it;
 
         Eigen::MatrixXf actual_z(2,1) ;
-        actual_z << gt_meas[i].dist, gt_meas[i].psi;
-        Eigen::MatrixXf measured_z(2,1);
-        measured_z <<observed_measurement.dist, observed_measurement.psi;
+        actual_z << gt_meas[i].psi, gt_meas[i].dist;
 
-        distance += ((actual_z - measured_z).transpose() * R.inverse() * (actual_z - measured_z)).value();
+        Eigen::MatrixXf measured_z(2,1);
+        measured_z << observed_measurement.psi, observed_measurement.dist;
+
+        // std::cout<<"Actual z \n"<<actual_z<<'\n';
+        // std::cout<<"measured z \n"<<measured_z<<'\n';
+        // std::cout<<"Inverse \n"<<GMM_R.inverse()<<'\n';
+
+        distance += ((actual_z - measured_z).transpose() * GMM_R.inverse() * (actual_z - measured_z)).value();
     }
-    if(common_landmarks > 0) std::cout<<"distance is "<<distance<<'\n';
+
+    // if(common_landmarks > 0) std::cout<<"distance is "<<distance<<'\n';
     weight *= exp(-0.5*distance);
 }
 
