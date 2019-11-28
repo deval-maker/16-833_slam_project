@@ -42,10 +42,10 @@ void Controller::set_current_state(double x, double y, double theta)
 
 void Controller::set_current_state(node n1)
 {
-    current_state.x = (double) n1.x;
-    current_state.y = (double) n1.y;
-    current_state.theta = (double) n1.theta;
-
+    current_state.x = n1.x;
+    current_state.y = n1.y;
+    current_state.theta = n1.theta;
+    // std::cout<<"Current state "<<current_state.x<<" "<<current_state.y<<" "<<current_state.theta<<'\n';
     prev_state = current_state;
 
     // cout << "[Set current state] " << current_state.toStr() << endl;
@@ -53,8 +53,8 @@ void Controller::set_current_state(node n1)
 
 void Controller::set_node_state(node &n1)
 {
-    n1.x = (int)current_state.x;
-    n1.y = (int)current_state.y;
+    n1.x = current_state.x;
+    n1.y = current_state.y;
     n1.theta = current_state.theta;
 }
 
@@ -230,9 +230,12 @@ bool Controller::next_time_step(velocities &control_sig_)
     if(Steer == drive_type)
     {
         dt = 0.1;
+        // std::cout<<"Before state "<<current_state.x<<" "<<current_state.y<<" "<<current_state.theta<<'\n';
+        // std::cout<<"Vx "<<control_sig.linx<<" omega "<<control_sig.ang<<" Time "<<dt<<'\n';
         current_state.x += ( control_sig.linx * dt * cos(current_state.theta));
         current_state.y += ( control_sig.linx * dt * sin(current_state.theta));
         current_state.theta += ( control_sig.ang * dt);
+        // std::cout<<"Current state "<<current_state.x<<" "<<current_state.y<<" "<<current_state.theta<<'\n';
     }
     else if(Omni == drive_type)
     {

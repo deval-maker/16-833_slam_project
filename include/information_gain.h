@@ -36,6 +36,21 @@ vector<point_t> get_control(point_t start_state, point_t goal_state, MapReader* 
 
     return controls;
 }
+vector<point_t> convert_to_path_information(point_t start_state, vector<point_t> actions)
+{
+    vector<point_t> plan;
+    plan.push_back(start_state);
+    point_t current = start_state;
+    for(int i = 0; i < actions.size(); i++)
+    {
+        current[0] += actions[i][0];
+        current[1] += actions[i][1];
+        // std::cout<<"Actions "<<actions[i][0]<<' '<<actions[i][1]<<'\n';
+        plan.push_back(current);
+    } 
+    return plan;
+}
+
 
 int get_optimal_policy(vector<vector<point_t>> paths, vector<mode> modes,
 MapReader* _map)
@@ -47,8 +62,14 @@ MapReader* _map)
     for(int i = 0; i < paths.size(); i++)
     {
         std::cout<<"Path number "<<i<<'\n';
-        vector<point_t> path = paths[i];
         int information_gain_policy = 0;
+
+        std::vector<std::vector<point_t>> plans;
+        for(int m = 0; m< modes.size(); m++)
+        {
+            point_t start{modes[m].mean[0], modes[m].mean[1]};
+            plans.push_back(convert_to_path_information(start,paths[i]));
+        }
 
         for(int j = 0; j < modes.size(); j++)
         {
@@ -57,28 +78,24 @@ MapReader* _map)
 
             vector<mode> modes_copy = modes;
 
-            for(int t = 0; t < path.size(); t++)
+            for(int t = 0; t < plans[0].size(); t++)
             {
                 double goal[2];
 
                 point_t start_state, goal_state;
                 start_state.push_back(modes_copy[j].mean[0]);
                 start_state.push_back(modes_copy[j].mean[1]);
+                start_state.push_back(modes_copy[j].mean[2]);
 
-                goal_state.push_back(path[t][0] + modes_copy[j].mean[0]);
-                goal_state.push_back(path[t][1] + modes_copy[j].mean[1]);
+                goal_state.push_back(plans[j][t][0]);
+                goal_state.push_back(plans[j][t][1]);
 
                 vector<point_t> controls = get_control(start_state, goal_state, _map);
 
-                std::cout<<"Start state "<<start_state[0]<<" "<<start_state[1]<<"\n";
-                std::cout<<"Goal state "<<goal_state[0]<<" "<<goal_state[1]<<"\n";
-                std::cout<<"Mode state "<<modes_copy[j].mean[0]<<" "<<modes_copy[j].mean[1]<<'\n';
-                std::cout<<"Controls size "<<controls.size()<<'\n';
                 for(auto control: controls){
                     modes_copy[j].propagate_motion(control[0], control[1]);
 
                 }
-                std::cout<<"Mode state after propagation "<<modes_copy[j].mean[0]<<" "<<modes_copy[j].mean[1]<<'\n';
                 _map->viz_session();
                 // std::cout<<"Mean of j: "<<modes_copy[j].mean[0]<<" "<<modes_copy[j].mean[1]<<" "<<
                 // modes_copy[j].mean[2]<<'\n';

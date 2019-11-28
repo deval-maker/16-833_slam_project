@@ -141,7 +141,7 @@ int main()
     // {
     //     std::cout<<actions[i][0]<<" "<<actions[i][1]<<'\n';
     // }
-
+    
     get_optimal_policy(plans,modes,map_obj.get());
 
 // ----------------------- Visualisation  ------------------------

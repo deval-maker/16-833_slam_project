@@ -2,21 +2,21 @@
 #include<MapReader.h>
 
 mode::mode(){
-    R << 0.001, 0, 0,
-         0, 0.001, 0,
-         0, 0, 0.001;
-    Q << 0.001, 0,
-         0, 0.001;
+    R << 0.00, 0, 0,
+         0, 0.00, 0,
+         0, 0, 0.00;
+    Q << 0.00, 0,
+         0, 0.00;
     delT = 0.1;
 }
 mode::mode(Eigen::Vector3f mean, Eigen::Matrix3f sigma,int weight)
 {
-    R << 0.001, 0, 0,
-        0, 0.001, 0,
-        0, 0, 0.001;
+    R << 0.00, 0, 0,
+        0, 0.00, 0,
+        0, 0, 0.00;
 
-    Q << 0.001, 0,
-         0, 0.001;
+    Q << 0.00, 0,
+         0, 0.00;
     this->mean = mean;
     this->sigma = sigma;
     this->weight = weight;
@@ -102,8 +102,8 @@ void mode::propagate_mode(double v, double omega,vector<meas> &gt_meas,MapReader
 
 void mode::propagate_motion(double v, double omega)
 {
-    std::cout<<"Mean "<<mean[0]<<" "<<mean[1]<<" "<<mean[2]<<'\n';
-    // std::cout<<"Velocity "<<v<<" Omega "<<omega<<'\n';
+    // std::cout<<"Before state "<<mean[0]<<" "<<mean[1]<<" "<<mean[2]<<'\n';
+    // std::cout<<"Velocity "<<v<<" Omega "<<omega<<" Time "<<delT<<'\n';
     // std::cout<<"delx "<<v*delT*cos(mean[2])<<" dely "<<v*delT*sin(mean[2])<<
     // "delTheta"<<omega*delT<<'\n';
     Eigen::Vector3f mean_bar;
@@ -117,6 +117,7 @@ void mode::propagate_motion(double v, double omega)
 
     mean = mean_bar;
     sigma = sigma_bar;
+    // std::cout<<"Current state "<<mean[0]<<" "<<mean[1]<<" "<<mean[2]<<'\n';
 
 }
 

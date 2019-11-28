@@ -9,6 +9,15 @@ node::node(int id, int x, int y, double theta)
     
 }
 
+node::node(int id, double x, double y, double theta)
+{
+    this->id = id;
+    this->x = x;
+    this->y = y;
+    this->theta = theta;
+    
+}
+
 
 int node::similarity(node &node1, node &node2)
 {

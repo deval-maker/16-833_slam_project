@@ -6,8 +6,8 @@ class node
 {
     public:
     int id;
-    int x;
-    int y;
+    double x;
+    double y;
     double theta;
     std::unordered_set<int> visible_landmarks;
 
@@ -17,6 +17,7 @@ class node
     }
 
     node(int id, int x, int y, double theta);
+    node(int id, double x, double y, double theta);
     friend ostream& operator<<(ostream& os, const node& dt);
     static int similarity(node &node1, node &node2);
     
