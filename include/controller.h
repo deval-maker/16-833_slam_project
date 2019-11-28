@@ -67,7 +67,7 @@ private:
     state_vector prev_state;
 
     std::chrono::high_resolution_clock::time_point last_ts;
-    
+
     velocities control_sig;
     velocities desired_vel;
     velocities current_vel;
@@ -80,19 +80,20 @@ private:
     double Kd_ly = 0;
     double Kd_a = 0;
 
-// Steer controller 
-    double Kp_st_lx = 0.15;
+// Steer controller
+    // double Kp_st_lx = 0.90;
+    double Kp_st_lx = 30;
     double Kp_st_a = 10;
 
     bool is_goal_reached();
     void threshold_max_control_sig();
     void threshold_min_control_sig();
-    
+
 public:
-    
+
     enum drive_type_e
     {
-        Steer, 
+        Steer,
         Omni
     };
 
@@ -100,7 +101,7 @@ public:
     velocities vel_max_thresh = velocities(15.0, 15.0, 1.5);
     velocities vel_min_thresh = velocities(0.1, 0.1, 0.01);
 
-    state_vector current_state; 
+    state_vector current_state;
     drive_type_e drive_type = Omni;
 
     Controller();

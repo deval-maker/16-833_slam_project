@@ -4,7 +4,7 @@ Controller::Controller()
 {
     goal = state_vector();
     error = state_vector();
-    current_state = state_vector(); 
+    current_state = state_vector();
     prev_state = current_state;
 
     last_ts = std::chrono::high_resolution_clock::now();
@@ -25,7 +25,7 @@ void Controller::set_goal(double x, double y, double theta)
 
     last_ts = std::chrono::high_resolution_clock::now();
 
-    // cout << "[Set Goal] " << goal.toStr() << endl;
+    cout << "[Set Goal] " << goal.toStr() << endl;
 
 }
 
@@ -76,7 +76,7 @@ void Controller::threshold_max_control_sig()
     if(fabs(control_sig.linx) >= vel_max_thresh.linx)
     {
         if(control_sig.linx >= 0)
-        {   
+        {
             control_sig.linx = vel_max_thresh.linx;
         }
         else
@@ -84,7 +84,7 @@ void Controller::threshold_max_control_sig()
             control_sig.linx = -vel_max_thresh.linx;
         }
     }
-    
+
     if(fabs(control_sig.liny) >= vel_max_thresh.liny)
     {
         if(control_sig.liny >= 0)
@@ -96,7 +96,7 @@ void Controller::threshold_max_control_sig()
             control_sig.liny = -vel_max_thresh.liny;
         }
     }
-    
+
     if(fabs(control_sig.ang) >= vel_max_thresh.ang)
     {
         if(control_sig.ang >= 0)
@@ -122,9 +122,9 @@ void Controller::threshold_min_control_sig()
         else
         {
             control_sig.linx = -vel_min_thresh.linx;
-        } 
+        }
     }
-    
+
     if(fabs(control_sig.liny) <= vel_min_thresh.liny)
     {
         if(control_sig.liny >= 0)
@@ -164,16 +164,16 @@ bool Controller::next_time_step(velocities &control_sig_)
     error.x = goal.x - current_state.x;
     error.y = goal.y - current_state.y;
     error.theta = goal.theta - current_state.theta;
-    cout<<"[Current Pos Error] "<<"x: "<<error.x<<" y: "<<error.y<<" Theta: "<<error.theta<<endl;
+    // cout<<"[Current Pos Error] "<<"x: "<<error.x<<" y: "<<error.y<<" Theta: "<<error.theta<<endl;
 
 
-    // cout << "[Error] " << error.toStr() << endl;
+    cout << "[Error] " << error.toStr() << endl;
     // cout << "[Current state] " << current_state.toStr() << endl;
     // cout << "[Prev state] " << prev_state.toStr() << endl;
 
     auto now_ts = std::chrono::high_resolution_clock::now();
     double dt = std::chrono::duration<double>(now_ts - last_ts).count();
-    
+
     bool is_at_goal = is_goal_reached();
 
     if(!is_at_goal)
@@ -192,11 +192,11 @@ bool Controller::next_time_step(velocities &control_sig_)
             current_vel.ang = current_state.theta;
             // cout << "[Current Velo] " << current_vel.toStr() << endl;
 
-            
+
 
             // Control Signal
             control_sig.linx = (desired_vel.linx) * Kp_st_lx;
-            
+
             control_sig.ang = (desired_vel.ang - current_vel.ang) * Kp_st_a;
             cout << "[Control Signal] " << control_sig.toStr() << endl;
 
@@ -215,7 +215,7 @@ bool Controller::next_time_step(velocities &control_sig_)
 
         threshold_max_control_sig();
 
-        
+
     }
     else
     {
@@ -226,9 +226,14 @@ bool Controller::next_time_step(velocities &control_sig_)
 
     prev_state = current_state;
 
-    // // Motion Model 
+    // // Motion Model
     if(Steer == drive_type)
     {
+        // std::cout<<"control signal "<<control_sig.linx<<'\n';
+        // std::cout<<cos(current_state.theta)<<" "<<current_state.theta<<'\n';
+        // std::cout<<dt<<'\n';
+        dt = 0.1;
+        std::cout<<control_sig.linx * dt * cos(current_state.theta)<<'\n';
         current_state.x += ( control_sig.linx * dt * cos(current_state.theta));
         current_state.y += ( control_sig.linx * dt * sin(current_state.theta));
         current_state.theta += ( control_sig.ang * dt);
