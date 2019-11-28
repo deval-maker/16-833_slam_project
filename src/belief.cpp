@@ -109,7 +109,8 @@ void mode::propagate_motion(double v, double omega)
     Eigen::Vector3f mean_bar;
     mean_bar[0] = mean[0] + v*delT*cos(mean[2]);
     mean_bar[1] = mean[1] + v*delT*sin(mean[2]);
-    mean_bar[2] = mean[2] + omega*delT;
+    mean_bar[2] = wrap2pi(mean[2] + omega*delT);
+
 
     Eigen::Matrix3f Gt = getGt(v,mean[2]);
 
@@ -135,18 +136,18 @@ void mode::update_measurement(vector<meas> &gt_meas, MapReader* map)
         else measurement = *it;
 
 
-        std::cout<<"Gt measurement "<<gt_meas[i].landmark_id<<" "<<gt_meas[i].dist<<" "<<
-        gt_meas[i].psi<<'\n';
+        //std::cout<<"Gt measurement "<<gt_meas[i].landmark_id<<" "<<gt_meas[i].dist<<" "<<
+        //gt_meas[i].psi<<'\n';
 
-        std::cout<<"Observed measurements "<<measurement.landmark_id<<" "<<measurement.dist<<" "<<
-        measurement.psi<<'\n';
+        //std::cout<<"Observed measurements "<<measurement.landmark_id<<" "<<measurement.dist<<" "<<
+        //measurement.psi<<'\n';
 
         point_t lm_position = map->get_landmark_pose(gt_meas[i].landmark_id);
         Eigen::Vector2f delta;
 
         std::cout<<"Actual landmark pose "<<lm_position[0]<<" "<<lm_position[1]<<'\n';
-        delta[0] = lm_position[0] - mean[0];
-        delta[1] = lm_position[1] - mean[1];
+        delta[0] = lm_position[0] - mean[0]; //dx
+        delta[1] = lm_position[1] - mean[1]; //dy
 
         double q = delta.transpose() * delta;
 
@@ -163,16 +164,23 @@ void mode::update_measurement(vector<meas> &gt_meas, MapReader* map)
 
         Eigen::MatrixXf Ht = getHt(q, delta);
 
+
         Eigen::MatrixXf Kt(3,2);
         Kt = sigma * Ht.transpose() * (Ht * sigma * Ht.transpose() + Q).inverse();
 
-        std::cout<<"Actual Z "<<actual_z[0]<<" "<<actual_z[1]<<'\n';
-        std::cout<<"Observed Z "<<observed_z[0]<<" "<<observed_z[1]<<'\n';
-        std::cout<<"Predicted Z "<<predicted_z[0]<<" "<<predicted_z[1]<<'\n';
+        std::cout<<"Current Mode Mean "<<mean[0]<<" "<<mean[1]<<" "<<mean[2]*180/M_PI<<"\n";
+        std::cout<<"Actual Z "<<actual_z[0]*180/M_PI<<" "<<actual_z[1]<<'\n';
+        std::cout<<"Observed Z "<<observed_z[0]*180/M_PI<<" "<<observed_z[1]<<'\n';
+        std::cout<<"Predicted Z "<<predicted_z[0]*180/M_PI<<" "<<predicted_z[1]<<'\n';
 
         mean = mean.eval() + Kt * (observed_z - actual_z);
-        // mean = mean.eval() + Kt * (observed_z - predicted_z);
+        mean[2] = wrap2pi(mean[2]);
+       
         sigma = sigma.eval() - Kt * Ht * sigma.eval();
+        std::cout<<"Kalman Gain "<<"\n"<<Kt<<"\n";
+        std::cout<<"Measurement Jacobian "<<"\n"<<Ht<<"\n";
+        std::cout<<"Corrected Mean "<<mean[0]<<" "<<mean[1]<<" "<<mean[2]*180/M_PI<<"\n";
+       
         std::cout<<'\n';
     }
 

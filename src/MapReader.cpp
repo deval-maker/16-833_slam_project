@@ -126,6 +126,8 @@ void MapReader::visualize_ellipse(Eigen::Vector2f mean, Eigen::Matrix2f sigma)
     //     std::cout<<"B is nan \n";
     //     b = 0;
     // }
+
+    std::cout<<"Eigs "<<a<<" "<<b<<"\n";
     std::cout<<"Axes length "<<factor*sqrt(0.5991*a)<<" "<<factor*sqrt(0.5991*b)<<'\n';
 
     cv::ellipse(A, Point(mean[0], mean[1]), Size(factor*sqrt(0.5991*a), factor*sqrt(0.5991*b)), to_degree(theta), 0, 360, Scalar(255,0,0), 3, 8);
@@ -326,7 +328,7 @@ vector<meas> MapReader::get_landmark_measurement(Eigen::Vector3f curr_pose)
                     measurement.landmark_id = hit_point;
                     double dist = sqrt(pow(robox - newx, 2) + pow(roboy - newy, 2));
                     measurement.dist = dist;
-                    measurement.psi = wrap2pi_util(angle);
+                    measurement.psi = wrap2pi_util(angle - curr_orient);
                     measurement.is_visible = true;
 
                     if(!visible_landmarks.count(hit_point))

@@ -13,7 +13,7 @@ class MapReader
 private:
     int total_landmarks = 10;
     static const int stepsize = 4;
-    double delta_theta = stepsize * PI/180.0;
+    double delta_theta = stepsize * M_PI/180.0;
     float delta_dist = 1.0;
     float laser_fov = 360;
     vector<point_t> landmark_lookup;

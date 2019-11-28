@@ -65,7 +65,7 @@ MapReader* _map)
         int information_gain_policy = 0;
 
         std::vector<std::vector<point_t>> plans;
-        
+
         for(int m = 0; m< modes.size(); m++)
         {
             point_t start{modes[m].mean[0], modes[m].mean[1]};
@@ -107,10 +107,12 @@ MapReader* _map)
                 Eigen::Vector3f pose_mode_j = modes_copy[j].mean;
                 vector<meas> actual_meas = _map->get_landmark_measurement(pose_mode_j);
                 
-                for(int k = 0; k < modes_copy.size(); k++)
+                for(int k = 0; k < 1; k++)
                 {
-                    if(k == j) continue;
-                //
+                    //if(k == j) continue;
+                //  
+                    std::cout<<" "<<"\n";
+                    std::cout<<"[DEBUG] Propogating mode "<<k<<std::endl;
                     point_t start_state, goal_state;
                     start_state.push_back(modes_copy[k].mean[0]);
                     start_state.push_back(modes_copy[k].mean[1]);
