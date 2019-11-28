@@ -92,16 +92,16 @@ double to_degree(double radian)
 
 void MapReader::visualize_ellipse(Eigen::Vector2f mean, Eigen::Matrix2f sigma)
 {
-    // std::cout<<"Sigma \n";
-    // for(int i = 0; i < 2; i++)
-    // {
-    //     for(int j = 0; j < 2; j++)
-    //     {
-    //         std::cout<<sigma(i,j)<<" ";            
-    //     }
-    //     std::cout<<"\n";
-    // }
-    // std::cout<<"\n\n";
+    std::cout<<"Sigma \n";
+    for(int i = 0; i < 2; i++)
+    {
+        for(int j = 0; j < 2; j++)
+        {
+            std::cout<<sigma(i,j)<<" ";            
+        }
+        std::cout<<"\n";
+    }
+    std::cout<<"\n\n";
 
     Eigen::SelfAdjointEigenSolver<Eigen::Matrix2f> eigensolver(sigma);
     if (eigensolver.info() != Eigen::Success)
