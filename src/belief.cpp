@@ -35,8 +35,10 @@ Eigen::Matrix3f mode::getGt(double v, double theta)
 Eigen::MatrixXf mode::getHt(double q, Eigen::Vector2f delta)
 {
     Eigen::MatrixXf matrix(2,3);
-    matrix<<delta[1]/q,          -delta[0]/q,        -1,
-            -delta[0]/sqrt(q),   -delta[1]/sqrt(q),   0;
+    // matrix<<delta[1]/q,          -delta[0]/q,        -1,
+    //         -delta[0]/sqrt(q),   -delta[1]/sqrt(q),   0;
+    matrix<<-delta[0]/sqrt(q),          -delta[1]/sqrt(q),        0,
+             delta[1]/sqrt(q),          -delta[0]/sqrt(q),       -1;
 
     return matrix;
 }
@@ -84,11 +86,11 @@ void mode::propagate_mode(double v, double omega,vector<meas> &gt_meas,MapReader
 
 
 
-        Eigen::Vector2f actual_z(measurement.psi, measurement.dist);
+        Eigen::Vector2f actual_z(measurement.dist, measurement.psi);
 
         Eigen::Vector2f predicted_z;
-        predicted_z[1] = sqrt(q);
-        predicted_z[0] = wrap2pi(atan2(delta[1],delta[0]) - mean_bar[2]);
+        predicted_z[0] = sqrt(q);
+        predicted_z[1] = wrap2pi(atan2(delta[1],delta[0]) - mean_bar[2]);
 
         Eigen::MatrixXf Ht = getHt(q, delta);
 
@@ -153,12 +155,12 @@ void mode::update_measurement(vector<meas> &gt_meas, MapReader* map)
 
         std::cout<<"Q value "<<q<<"\n";
 
-        Eigen::Vector2f actual_z(gt_meas[i].psi, gt_meas[i].dist);
-        Eigen::Vector2f observed_z(measurement.psi, measurement.dist);
+        Eigen::Vector2f actual_z(gt_meas[i].dist, gt_meas[i].psi);
+        Eigen::Vector2f observed_z(measurement.dist, measurement.psi);
 
         Eigen::Vector2f predicted_z;
-        predicted_z[1] = sqrt(q);
-        predicted_z[0] = wrap2pi(atan2(delta[1],delta[0]) - mean[2]);
+        predicted_z[0] = sqrt(q);
+        predicted_z[1] = wrap2pi(atan2(delta[1],delta[0]) - mean[2]);
 
 
 
@@ -178,7 +180,8 @@ void mode::update_measurement(vector<meas> &gt_meas, MapReader* map)
        
         sigma = sigma.eval() - Kt * Ht * sigma.eval();
         std::cout<<"Kalman Gain "<<"\n"<<Kt<<"\n";
-        std::cout<<"Measurement Jacobian "<<"\n"<<Ht<<"\n";
+        std::cout<<"Product "<<"\n"<<Kt*Ht<<"\n";
+        std::cout<<"Measurement jacobian "<<"\n"<<Ht<<"\n";
         std::cout<<"Corrected Mean "<<mean[0]<<" "<<mean[1]<<" "<<mean[2]*180/M_PI<<"\n";
        
         std::cout<<'\n';

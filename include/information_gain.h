@@ -128,8 +128,8 @@ MapReader* _map)
                 
                     }
                     modes_copy[k].visualize_ellipse(_map);
-                    modes_copy[k].update_measurement(actual_meas,_map);
-                //     modes_copy[k].update_weight(actual_meas, _map);
+                    // modes_copy[k].update_measurement(actual_meas,_map);
+                    // modes_copy[k].update_weight(actual_meas, _map);
                 }
                 _map->viz_session();
 
