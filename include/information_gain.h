@@ -96,35 +96,38 @@ MapReader* _map)
                     modes_copy[j].propagate_motion(control[0], control[1]);
 
                 }
-                _map->viz_session();
                 // std::cout<<"Mean of j: "<<modes_copy[j].mean[0]<<" "<<modes_copy[j].mean[1]<<" "<<
                 // modes_copy[j].mean[2]<<'\n';
 
                 modes_copy[j].visualize_ellipse(_map);
 
-                // Eigen::Vector3f pose_mode_j = modes_copy[j].mean;
-                // vector<meas> actual_meas = _map->get_landmark_measurement(pose_mode_j);
+                Eigen::Vector3f pose_mode_j = modes_copy[j].mean;
+                vector<meas> actual_meas = _map->get_landmark_measurement(pose_mode_j);
+                
+                for(int k = 0; k < modes_copy.size(); k++)
+                {
+                    if(k == j) continue;
                 //
-                // for(int k = 0; k < modes_copy.size(); k++)
-                // {
-                //     if(k == j) continue;
+                    point_t start_state, goal_state;
+                    start_state.push_back(modes_copy[k].mean[0]);
+                    start_state.push_back(modes_copy[k].mean[1]);
+                    start_state.push_back(modes_copy[k].mean[2]);
+
+                    goal_state.push_back(plans[k][t][0]);
+                    goal_state.push_back(plans[k][t][1]);
+
+                    vector<point_t> controls = get_control(start_state, goal_state, _map);
                 //
-                //     point_t start_state, goal_state;
-                //     start_state.push_back(modes_copy[k].mean[0]);
-                //     start_state.push_back(modes_copy[k].mean[1]);
-                //
-                //     goal_state.push_back(path[t][0] + modes_copy[k].mean[0]);
-                //     goal_state.push_back(path[t][1] + modes_copy[k].mean[1]);
-                //
-                //     vector<point_t> controls = get_control(start_state, goal_state, _map);
-                //
-                //     for(auto control: controls){
-                //         modes_copy[k].propagate_motion(control[0], control[1]);
-                //
-                //     }
-                //     modes_copy[k].update_measurement(actual_meas,_map);
+                    for(auto control: controls){
+                        modes_copy[k].propagate_motion(control[0], control[1]);
+                
+                    }
+                    modes_copy[k].visualize_ellipse(_map);
+                    // modes_copy[k].update_measurement(actual_meas,_map);
                 //     modes_copy[k].update_weight(actual_meas, _map);
-                // }
+                }
+                _map->viz_session();
+
             }
             _map->viz_session();
 
