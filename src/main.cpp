@@ -21,14 +21,13 @@ vector<point_t> convert_to_path(point_t start_state, vector<point_t> actions)
         current[1] += actions[i][1];
         // std::cout<<"Actions "<<actions[i][0]<<' '<<actions[i][1]<<'\n';
         plan.push_back(current);
-    } 
+    }
     return plan;
 }
-
 int main()
 {
 
-    if(test) 
+    if(test)
     {
         test_();
         return 0;
@@ -48,7 +47,7 @@ int main()
 
 // ------------ Hardcode Modes --------------------------------------------
     Eigen::Vector3f firstmean, secondmean, thirdmean;
-    firstmean << 225, 605, 0; 
+    firstmean << 225, 605, 0;
     secondmean << 850, 175, 3.14;
     thirdmean <<  640, 830, 3.14/2;
 
@@ -64,14 +63,14 @@ int main()
     mode secondMode(secondmean, sigma, weight);
     mode thirdMode(thirdmean, sigma, weight);
 
-    vector<mode> modes{firstMode, secondMode, thirdMode}; 
+    vector<mode> modes{firstMode, secondMode, thirdMode};
 
 // -------------Target state computation ------------------
     node firstNode (1, firstmean[0], firstmean[1], firstmean[2]);
     node secondNode (2, secondmean[0], secondmean[1], secondmean[2]);
     node thirdNode (3, thirdmean[0], thirdmean[1], thirdmean[2]);
 
-    vector<node> Nodes{firstNode,secondNode, thirdNode}; 
+    vector<node> Nodes{firstNode,secondNode, thirdNode};
 
     node firstTarget = unq_graph->target_state(firstNode, Nodes);
     node secondTarget = unq_graph->target_state(secondNode, Nodes);
@@ -80,11 +79,11 @@ int main()
     point_t firstModePoint{firstNode.x, firstNode.y}, firstTargetPoint{firstTarget.x, firstTarget.y};
     point_t secondModePoint{secondNode.x, secondNode.y}, secondTargetPoint{secondTarget.x, secondTarget.y};
     point_t thirdModePoint{thirdNode.x, thirdNode.y}, thirdTargetPoint{thirdTarget.x, thirdTarget.y};
- 
-    vector<point_t> visualizationPoint{firstModePoint, firstTargetPoint, secondModePoint, 
+
+    vector<point_t> visualizationPoint{firstModePoint, firstTargetPoint, secondModePoint,
     secondTargetPoint, thirdModePoint, thirdTargetPoint};
 
-    
+
     // map_obj->visualize_point(firstModePoint);
     // map_obj->visualize_point(secondModePoint);
     // map_obj->visualize_point(thirdModePoint);
@@ -109,7 +108,7 @@ int main()
             start_point = secondModePoint;
             goal_point = secondTargetPoint;
         }
-        else 
+        else
         {
             start_point = thirdModePoint;
             goal_point = thirdTargetPoint;
