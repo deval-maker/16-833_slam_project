@@ -1,3 +1,8 @@
 #!/bin/bash
-make
-./proj
+
+cd build
+cmake ..
+# make clean
+make 
+cd ../
+./bin/proj
