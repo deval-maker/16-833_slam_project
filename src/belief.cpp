@@ -35,8 +35,8 @@ Eigen::Matrix3f mode::getGt(double v, double theta)
 Eigen::MatrixXf mode::getHt(double q, Eigen::Vector2f delta)
 {
     Eigen::MatrixXf matrix(2,3);
-    matrix<<delta[1]/q,          delta[0]/q,        -1,
-            delta[0]/sqrt(q),   -delta[1]/sqrt(q),   0;
+    matrix<<delta[1]/q,          -delta[0]/q,        -1,
+            -delta[0]/sqrt(q),   -delta[1]/sqrt(q),   0;
 
     return matrix;
 }
@@ -157,7 +157,7 @@ void mode::update_measurement(vector<meas> &gt_meas, MapReader* map)
 
         Eigen::Vector2f predicted_z;
         predicted_z[1] = sqrt(q);
-        predicted_z[0] = wrap2pi(wrap2pi(atan2(delta[1],delta[0])) - mean[2]);
+        predicted_z[0] = wrap2pi(atan2(delta[1],delta[0]) - mean[2]);
 
 
 
@@ -171,6 +171,7 @@ void mode::update_measurement(vector<meas> &gt_meas, MapReader* map)
         std::cout<<"Predicted Z "<<predicted_z[0]<<" "<<predicted_z[1]<<'\n';
 
         mean = mean.eval() + Kt * (observed_z - actual_z);
+        // mean = mean.eval() + Kt * (observed_z - predicted_z);
         sigma = sigma.eval() - Kt * Ht * sigma.eval();
         std::cout<<'\n';
     }

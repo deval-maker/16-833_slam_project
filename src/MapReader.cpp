@@ -106,7 +106,7 @@ void MapReader::visualize_ellipse(Eigen::Vector2f mean, Eigen::Matrix2f sigma)
     Eigen::SelfAdjointEigenSolver<Eigen::Matrix2f> eigensolver(sigma);
     if (eigensolver.info() != Eigen::Success)
         {
-            std::cout<<"Problem with Eigen vector computation \n";
+            std::cout<<"[ERROR] Problem with Eigen vector computation \n";
             return ;
         }
 
@@ -114,8 +114,21 @@ void MapReader::visualize_ellipse(Eigen::Vector2f mean, Eigen::Matrix2f sigma)
     double theta = atan2(double(eigensolver.eigenvectors()(1, 0)), double(eigensolver.eigenvectors()(0, 0)));
     // cout << "theta of ellipse" << theta << endl;
     double factor = 1;
-    // std::cout<<"Axes length "<<factor*sqrt(0.5991*eigensolver.eigenvalues()(1,0))<<" "<<factor*sqrt(0.5991*eigensolver.eigenvalues()(0,0))<<'\n';
-    cv::ellipse(A, Point(mean[0], mean[1]), Size(factor*sqrt(0.5991*eigensolver.eigenvalues()(1,0)), factor*sqrt(0.5991*eigensolver.eigenvalues()(0,0))), to_degree(theta), 0, 360, Scalar(255,0,0), 3, 8);
+    double a = eigensolver.eigenvalues()(1,0); 
+    // if(isnan(a) || a <= 0)
+    // {
+    //     std::cout<<"A is nan \n";
+    //     a = 0;
+    // }
+    double b = eigensolver.eigenvalues()(0,0); 
+    // if(isnan(b) || b <= 0)
+    // {
+    //     std::cout<<"B is nan \n";
+    //     b = 0;
+    // }
+    std::cout<<"Axes length "<<factor*sqrt(0.5991*a)<<" "<<factor*sqrt(0.5991*b)<<'\n';
+
+    cv::ellipse(A, Point(mean[0], mean[1]), Size(factor*sqrt(0.5991*a), factor*sqrt(0.5991*b)), to_degree(theta), 0, 360, Scalar(255,0,0), 3, 8);
 }
 
 void MapReader::clear_session()
@@ -254,6 +267,14 @@ void MapReader::update_visible_landmarks(node &x_t, bool visualize)
     }
 
 }
+double wrapMax_util(double x, double max)
+{
+    return fmod(max + fmod(x, max), max);
+}
+double wrap2pi_util(double x)
+{
+    return -M_PI + wrapMax_util(x + (M_PI), 2*M_PI );
+}
 
 vector<meas> MapReader::get_landmark_measurement(Eigen::Vector3f curr_pose)
 {
@@ -305,7 +326,7 @@ vector<meas> MapReader::get_landmark_measurement(Eigen::Vector3f curr_pose)
                     measurement.landmark_id = hit_point;
                     double dist = sqrt(pow(robox - newx, 2) + pow(roboy - newy, 2));
                     measurement.dist = dist;
-                    measurement.psi = angle;
+                    measurement.psi = wrap2pi_util(angle);
                     measurement.is_visible = true;
 
                     if(!visible_landmarks.count(hit_point))

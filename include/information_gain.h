@@ -55,7 +55,7 @@ vector<point_t> convert_to_path_information(point_t start_state, vector<point_t>
 int get_optimal_policy(vector<vector<point_t>> paths, vector<mode> modes,
 MapReader* _map)
 {
-    std::cout<<"Inside get optimal policy \n";
+    std::cout<<"[INFO] Choosing the optimal policy \n";
     double wt_threshold = 0.2;
     std::vector<double> information_gains;
 
@@ -65,6 +65,7 @@ MapReader* _map)
         int information_gain_policy = 0;
 
         std::vector<std::vector<point_t>> plans;
+        
         for(int m = 0; m< modes.size(); m++)
         {
             point_t start{modes[m].mean[0], modes[m].mean[1]};

@@ -35,7 +35,7 @@ int main()
     }
 
 //------------- Map Reader  --------------------------------
-    String map_path = "data/map3.txt";
+    String map_path = "data/map4.txt";
 
     std::shared_ptr<MapReader> map_obj = std::make_shared<MapReader>(map_path);
     map_obj->visualize_map();
