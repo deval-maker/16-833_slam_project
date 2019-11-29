@@ -1,5 +1,4 @@
-#ifndef BELIEF_H
-#define BELIEF_H
+#pragma once
 
 #include<iostream>
 #include<MapReader.h>
@@ -38,4 +37,3 @@ class mode{
 
 };
 
-#endif

@@ -1,3 +1,4 @@
+#pragma once
 #include <utils.h>
 #include <controller.h>
 
@@ -131,7 +132,6 @@ MapReader* _map)
                     // modes_copy[k].update_measurement(actual_meas,_map);
                     modes_copy[k].update_weight(actual_meas, _map);
                 }
-                _map->viz_session();
 
             }
             _map->viz_session();

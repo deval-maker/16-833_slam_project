@@ -1,5 +1,4 @@
-#ifndef COMMANDS_H_
-#define COMMANDS_H_
+#pragma once
 
 double random_limits(double min, double max)
 {
@@ -54,4 +53,3 @@ vector<mode> spawn_modes(mode original_mode, Eigen::Matrix3f sigma_init,
 
 }
 
-#endif

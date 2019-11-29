@@ -1,11 +1,12 @@
+#include <graph.h>
 #include <utils.h>
 #include <node.h>
-#include <graph.h>
 #include <search.h>
 #include <MapReader.h>
 #include <belief.h>
 #include <information_gain.h>
 #include <spawn_modes.h>
+#include <GMM_update.h>
 #include <test.h>
 using namespace std;
 
@@ -67,6 +68,7 @@ int main()
     unq_graph->viz_graph();
 // ------------------------Spawn Modes -----------------------------------
 
+
 // ------------ Hardcode Modes --------------------------------------------
     Eigen::Vector3f firstmean, secondmean, thirdmean;
     firstmean << 225, 605, 0;
@@ -86,7 +88,11 @@ int main()
     mode thirdMode(thirdmean, sigma, weight);
 
     vector<mode> modes{firstMode, secondMode, thirdMode};
+// ----------------------Spawn Ground Truth -----------------------------------
 
+    mode groundTruth(firstmean, sigma, weight);
+
+    
 // -------------Target state computation ------------------
     node firstNode (1, firstmean[0], firstmean[1], firstmean[2]);
     node secondNode (2, secondmean[0], secondmean[1], secondmean[2]);
@@ -163,8 +169,10 @@ int main()
     //     std::cout<<actions[i][0]<<" "<<actions[i][1]<<'\n';
     // }
 
-    get_optimal_policy(plans,modes,map_obj.get());
-
+    int optimal_policy_index = get_optimal_policy(plans,modes,map_obj.get());
+// ----------------------- Actual propagation and GMM weight update  ------------------------
+    propagate_policy(plans[optimal_policy_index], groundTruth, modes, map_obj.get());
+    
 // ----------------------- Visualisation  ------------------------
     map_obj->viz_session(); //  Creating a session for visualisation
 
