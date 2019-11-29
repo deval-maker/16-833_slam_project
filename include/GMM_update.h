@@ -3,8 +3,8 @@
 vector<point_t> get_control_propagate(point_t start_state, point_t goal_state, MapReader* map_obj)
 {
 
-    std::cout<<"start state received "<<start_state[0]<<" "<<start_state[1]<<" "<<start_state[2]<<'\n';
-    std::cout<<"Goal state received "<<goal_state[0]<<" "<<goal_state[1]<<"\n";
+    // std::cout<<"start state received "<<start_state[0]<<" "<<start_state[1]<<" "<<start_state[2]<<'\n';
+    // std::cout<<"Goal state received "<<goal_state[0]<<" "<<goal_state[1]<<"\n";
     vector<point_t> controls;
     point_t ret;
     velocities steer_velos;
@@ -42,7 +42,7 @@ vector<point_t> get_control_propagate(point_t start_state, point_t goal_state, M
 
 vector<point_t> convert_to_path_propagate(point_t start_state, vector<point_t> actions)
 {
-    std::cout<<"Start state received "<<start_state[0]<<" "<<start_state[1]<<'\n';
+    // std::cout<<"Start state received "<<start_state[0]<<" "<<start_state[1]<<'\n';  
     vector<point_t> plan;
     plan.push_back(start_state);
     point_t current = start_state;
@@ -64,8 +64,8 @@ MapReader* _map)
     point_t groundTruth_start_state{groundTruth.mean[0], groundTruth.mean[1]};
 
 
-    std::cout<<"Ground truth start state "<<groundTruth_start_state[0]<<' '<<
-    groundTruth_start_state[1]<<" "<<groundTruth_start_state[2]<<'\n';
+    // std::cout<<"Ground truth start state "<<groundTruth_start_state[0]<<' '<<
+    // groundTruth_start_state[1]<<" "<<groundTruth_start_state[2]<<'\n';
 
     vector<point_t> groundTruth_plan = convert_to_path_propagate(groundTruth_start_state, actions);
 
@@ -89,14 +89,14 @@ MapReader* _map)
 
         vector<point_t> controls = get_control_propagate(start_state, goal_state, _map);
 
-        std::cout<<"Ground Truth before propagation "<<groundTruth.mean[0]<<' '<<
-        groundTruth.mean[1]<<" "<<groundTruth.mean[2]<<'\n';
+        // std::cout<<"Ground Truth before propagation "<<groundTruth.mean[0]<<' '<<
+        // groundTruth.mean[1]<<" "<<groundTruth.mean[2]<<'\n';
 
         for(auto control: controls){
             groundTruth.propagate_motion(control[0], control[1]);
         }
-        std::cout<<"Ground current state "<<groundTruth.mean[0]<<' '<<
-        groundTruth.mean[1]<<" "<<groundTruth.mean[2]<<'\n';
+        // std::cout<<"Ground current state "<<groundTruth.mean[0]<<' '<<
+        // groundTruth.mean[1]<<" "<<groundTruth.mean[2]<<'\n';
 
         
         vector<meas> actual_meas = _map->get_landmark_measurement(groundTruth.mean);
@@ -115,8 +115,8 @@ MapReader* _map)
 
             vector<point_t> controls = get_control_propagate(start_state, goal_state, _map);
 
-            std::cout<<"Controls state for mode "<<k<<" Before propagation "<<modes[k].mean[0]<<' '<<
-            modes[k].mean[1]<<" "<<modes[k].mean[2]<<'\n';
+            // std::cout<<"Controls state for mode "<<k<<" Before propagation "<<modes[k].mean[0]<<' '<<
+            // modes[k].mean[1]<<" "<<modes[k].mean[2]<<'\n';
 
 
 
@@ -125,17 +125,17 @@ MapReader* _map)
         
             }
 
-            std::cout<<"Controls state for mode "<<k<<" "<<modes[k].mean[0]<<' '<<
-            modes[k].mean[1]<<" "<<modes[k].mean[2]<<'\n';
+            // std::cout<<"Controls state for mode "<<k<<" "<<modes[k].mean[0]<<' '<<
+            // modes[k].mean[1]<<" "<<modes[k].mean[2]<<'\n';
 
             modes[k].visualize_ellipse(_map);
             // modes_copy[k].update_measurement(actual_meas,_map);
             modes[k].update_weight(actual_meas, _map);
 
-            std::cout<<"Intermediate weight of mode : "<<k<<" "<<modes[k].weight<<'\n';
+            // std::cout<<"Intermediate weight of mode : "<<k<<" "<<modes[k].weight<<'\n';
 
         }
-        std::cout<<"\n\n";
+        // std::cout<<"\n\n";
 
     }
 
