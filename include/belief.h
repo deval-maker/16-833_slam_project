@@ -15,6 +15,7 @@ class mode{
         Eigen::Matrix3f sigma;
         double delT;
         double weight;
+        double beta;
         Eigen::Matrix3f R;
         Eigen::Matrix2f GMM_R;
         Eigen::Matrix2f Q;

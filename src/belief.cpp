@@ -12,6 +12,7 @@ mode::mode(){
     Q << 0.00, 0,
          0, 0.00;
 
+    beta = 0;
     delT = 0.1;
 }
 mode::mode(Eigen::Vector3f mean, Eigen::Matrix3f sigma, double weight)
@@ -25,6 +26,9 @@ mode::mode(Eigen::Vector3f mean, Eigen::Matrix3f sigma, double weight)
 
     Q << 0.00, 0,
          0, 0.00;
+    
+    beta = 0;
+    
     this->mean = mean;
     this->sigma = sigma;
     this->weight = weight;
@@ -202,12 +206,10 @@ void mode::update_weight(vector<meas> &gt_meas, MapReader* map)
     double distance = 0;
     vector<meas> observed_measurements = map->get_landmark_measurement(mean);
     int common_landmarks = 0;
-
     for(int i = 0; i < gt_meas.size(); i++)
     {
         auto it = std::find(observed_measurements.begin(), observed_measurements.end(), gt_meas[i]);
         if(it == observed_measurements.end()) continue;
-
         // std::cout<<"Common Landmark \n";
         common_landmarks += 1;
         meas observed_measurement = *it;
@@ -225,8 +227,20 @@ void mode::update_weight(vector<meas> &gt_meas, MapReader* map)
         distance += ((actual_z - measured_z).transpose() * GMM_R.inverse() * (actual_z - measured_z)).value();
     }
 
+
     // if(common_landmarks > 0) std::cout<<"distance is "<<distance<<'\n';
     weight *= exp(-0.5*distance);
+
+    if(common_landmarks != observed_measurements.size() || 
+        common_landmarks != gt_meas.size())
+    {
+        double alpha = std::max(1 + observed_measurements.size() - common_landmarks, 
+        1 + gt_meas.size() - common_landmarks);
+        beta += delT;
+        double gamma = exp(-pow(10,-4)*alpha*beta);
+        weight *= gamma; 
+    }   
+
 }
 
 void mode::visualize_ellipse(MapReader* map)
