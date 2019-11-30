@@ -33,6 +33,7 @@ public:
     
     void visualize_map(void);
     void visualize_point(point_t point, cv::viz::Color color);
+    void visualize_point_and_dir(point_t point, cv::viz::Color color);
     void visualize_path(vector<point_t> path, cv::viz::Color color);
     void visualize_UG(vector<node> ug, cv::viz::Color color);
     void visualize_ellipse(Eigen::Vector2f mean, Eigen::Matrix2f sigma);

@@ -73,6 +73,15 @@ void MapReader::visualize_point(point_t point, cv::viz::Color color)
 {
     Point ray_pt0 = Point((int)point[0], (int)point[1]);
     cv::circle(A, ray_pt0, 5, color, CV_FILLED, 1, 0);
+}  
+
+void MapReader::visualize_point_and_dir(point_t point, cv::viz::Color color)
+{
+    Point ray_pt0 = Point((int)point[0], (int)point[1]);
+    cv::circle(A, ray_pt0, 5, color, CV_FILLED, 1, 0);
+    double arrow_dist = 20;
+    Point next_pt = Point(point[0] + arrow_dist * cos(point[2]), point[1] + arrow_dist * sin(point[2]));
+    line(A, ray_pt0, next_pt, cv::viz::Color::maroon(), 1, 8);
 }
 
 void MapReader::visualize_path(vector<point_t> path, cv::viz::Color color)
