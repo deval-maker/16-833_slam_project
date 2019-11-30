@@ -128,7 +128,7 @@ MapReader* _map)
             // std::cout<<"Controls state for mode "<<k<<" "<<modes[k].mean[0]<<' '<<
             // modes[k].mean[1]<<" "<<modes[k].mean[2]<<'\n';
 
-            // modes[k].visualize_ellipse(_map);
+            modes[k].visualize_ellipse(_map);
             // modes_copy[k].update_measurement(actual_meas,_map);
             modes[k].update_weight(actual_meas, _map);
 

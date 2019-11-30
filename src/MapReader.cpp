@@ -113,19 +113,19 @@ void MapReader::visualize_ellipse(Eigen::Vector2f mean, Eigen::Matrix2f sigma)
     // find angle of eigvector fo largest eigen value
     double theta = atan2(double(eigensolver.eigenvectors()(1, 0)), double(eigensolver.eigenvectors()(0, 0)));
     // cout << "theta of ellipse" << theta << endl;
-    double factor = 100;
+    double factor = 1;
     double a = eigensolver.eigenvalues()(1,0);
-    // if(isnan(a) || a <= 0)
-    // {
-    //     std::cout<<"A is nan \n";
-    //     a = 0;
-    // }
+    if(isnan(a) || a <= 0)
+    {
+        // std::cout<<"A is nan \n";
+        a = 0;
+    }
     double b = eigensolver.eigenvalues()(0,0);
-    // if(isnan(b) || b <= 0)
-    // {
-    //     std::cout<<"B is nan \n";
-    //     b = 0;
-    // }
+    if(isnan(b) || b <= 0)
+    {
+        // std::cout<<"B is nan \n";
+        b = 0;
+    }
 
     // std::cout<<"Eigs "<<a<<" "<<b<<"\n";
     // std::cout<<"Axes length "<<factor*sqrt(0.5991*a)<<" "<<factor*sqrt(0.5991*b)<<'\n';
@@ -320,6 +320,9 @@ vector<meas> MapReader::get_landmark_measurement(Eigen::Vector3f curr_pose)
         while (true)
         {
             hit_point = query_map(newy, newx);
+            double dist = sqrt(pow(robox - newx, 2) + pow(roboy - newy, 2));
+            
+            if (dist >= 250) break;
 
             if(hit_point <= total_landmarks)
             {
@@ -371,7 +374,7 @@ vector<meas> MapReader::get_landmark_measurement(Eigen::Vector3f curr_pose)
         }
 
         cv::imshow("SLAM Project", A);
-        cv::waitKey(10);
+        cv::waitKey(0);
     }
 
     return ret;

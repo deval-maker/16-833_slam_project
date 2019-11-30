@@ -6,8 +6,8 @@ mode::mode(){
          0, 0.00, 0,
          0, 0, 0.00;
 
-   GMM_R << 0.3, 0,
-            0, 70;
+   GMM_R << 100, 0,
+            0, 0.3;
 
     Q << 0.00, 0,
          0, 0.00;
@@ -21,8 +21,8 @@ mode::mode(Eigen::Vector3f mean, Eigen::Matrix3f sigma, double weight)
         0, 0.00, 0,
         0, 0, 0.00;
 
-    GMM_R << 0.3, 0,
-             0, 100;
+    GMM_R << 100, 0,
+             0, 0.3;
 
     Q << 0.00, 0,
          0, 0.00;
@@ -216,19 +216,20 @@ void mode::update_weight(vector<meas> &gt_meas, MapReader* map)
         meas observed_measurement = *it;
 
         Eigen::MatrixXf actual_z(2,1) ;
-        actual_z << gt_meas[i].psi, gt_meas[i].dist;
+        actual_z << gt_meas[i].dist, gt_meas[i].psi;
 
         Eigen::MatrixXf measured_z(2,1);
-        measured_z << observed_measurement.psi, observed_measurement.dist;
-
-        // std::cout<<"Actual z \n"<<actual_z<<'\n';
-        // std::cout<<"measured z \n"<<measured_z<<'\n';
-        // std::cout<<"Inverse \n"<<GMM_R.inverse()<<'\n';
+        measured_z << observed_measurement.dist, observed_measurement.psi;
+        std::cout<<"Landmark ID "<<gt_meas[i].landmark_id<<" "<<observed_measurement.landmark_id<<'\n';
+        std::cout<<"Actual z \n"<<actual_z<<'\n';
+        std::cout<<"measured z \n"<<measured_z<<'\n';
+        std::cout<<"Difference \n"<<(actual_z - measured_z)<<'\n';
+        std::cout<<"Inverse \n"<<GMM_R.inverse()<<'\n';
 
         distance += ((actual_z - measured_z).transpose() * GMM_R.inverse() * (actual_z - measured_z)).value();
     }
 
-    std::cout<<"Number of common landmarks "<<common_landmarks<<'\n';
+    // std::cout<<"Number of Common Landmarks "<<common_landmarks<<'\n';
     // if(common_landmarks > 0) std::cout<<"distance is "<<distance<<'\n';
     weight *= exp(-0.5*distance);
 
@@ -240,7 +241,7 @@ void mode::update_weight(vector<meas> &gt_meas, MapReader* map)
         beta += delT;
         double gamma = exp(-pow(10,-4)*alpha*beta);
         weight *= gamma; 
-        std::cout<<"Gamma "<<gamma<<'\n';
+        // std::cout<<"Gamma "<<gamma<<'\n';
     }   
 
 }

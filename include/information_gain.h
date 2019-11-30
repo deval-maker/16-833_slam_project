@@ -37,15 +37,15 @@ vector<point_t> get_control(point_t start_state, point_t goal_state, MapReader* 
 
     return controls;
 }
-vector<point_t> convert_to_path_information(point_t start_state, vector<point_t> actions)
+vector<point_t> convert_to_path_information(point_t start_state, vector<point_t> actions, double relative_angle)
 {
     vector<point_t> plan;
     plan.push_back(start_state);
     point_t current = start_state;
     for(int i = 0; i < actions.size(); i++)
     {
-        current[0] += actions[i][0];
-        current[1] += actions[i][1];
+        current[0] += cos(relative_angle)*actions[i][0] - sin(relative_angle)*actions[i][1];
+        current[1] += sin(relative_angle)*actions[i][0] + cos(relative_angle)*actions[i][1];
         // std::cout<<"Actions "<<actions[i][0]<<' '<<actions[i][1]<<'\n';
         plan.push_back(current);
     } 
@@ -69,8 +69,9 @@ MapReader* _map)
 
         for(int m = 0; m< modes.size(); m++)
         {
+            double relative_angle = - modes[m].mean[2] + modes[i].mean[2];
             point_t start{modes[m].mean[0], modes[m].mean[1]};
-            plans.push_back(convert_to_path_information(start,paths[i]));
+            plans.push_back(convert_to_path_information(start,paths[i],relative_angle));
         }
 
         for(int j = 0; j < modes.size(); j++)
@@ -80,7 +81,7 @@ MapReader* _map)
 
             vector<mode> modes_copy = modes;
 
-            for(int t = 0; t < plans[0].size(); t++)
+            for(int t = 0; t < plans[i].size(); t++)
             {
                 double goal[2];
 
@@ -101,7 +102,7 @@ MapReader* _map)
                 // std::cout<<"Mean of j: "<<modes_copy[j].mean[0]<<" "<<modes_copy[j].mean[1]<<" "<<
                 // modes_copy[j].mean[2]<<'\n';
                 // std::cout<<"Visualizing j ellipse \n";
-                //modes_copy[j].visualize_ellipse(_map);
+                modes_copy[j].visualize_ellipse(_map);
 
                 // std::cout<<"\n Visualizing k ellipses \n";
 
@@ -128,24 +129,30 @@ MapReader* _map)
                         modes_copy[k].propagate_motion(control[0], control[1]);
                 
                     }
-                   //modes_copy[k].visualize_ellipse(_map);
+                    modes_copy[k].visualize_ellipse(_map);
                     // modes_copy[k].update_measurement(actual_meas,_map);
-                    //modes_copy[k].update_weight(actual_meas, _map);
+                    // std::cout<<"Updating weight for Mode "<<k<<"\n";
+                    modes_copy[k].update_weight(actual_meas, _map);
+                    // std::cout<<"Weight for mode "<<k<<" "<<modes_copy[k].weight<<"\n";
                 }
+                _map->viz_session();
 
             }
-            _map->viz_session();
 
             for(int k = 0; k < modes_copy.size(); k++)
             {
+                std::cout<<"[DEBUG] Weight for Mode "<<k<<" is "<<modes_copy[k].weight<<std::endl;
                 if(modes_copy[k].weight < wt_threshold)
                     information_gain_mode++;
+                
             }
             information_gain_policy += modes[j].weight * information_gain_mode;
 
         }
         information_gains.push_back(information_gain_policy);
     }
+    _map->viz_session();
+
     for(int i = 0; i<information_gains.size(); i++)
     {
     std::cout<<"[INFO] Information Gain for Policy "<<i<<" is "<<information_gains[i]<<'\n';

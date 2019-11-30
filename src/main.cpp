@@ -56,36 +56,38 @@ int main()
     }
 
 //------------- Map Reader  --------------------------------
-    String map_path = "data/map5.txt";
+    String map_path = "data/map7.txt";
 
     std::shared_ptr<MapReader> map_obj = std::make_shared<MapReader>(map_path);
     map_obj->visualize_map();
 
 //------------- Uniqueness graph creation --------------------------------
-    std::shared_ptr<Unique_Graph> unq_graph = std::make_shared<Unique_Graph>(map_obj, 2500, 32);
+    std::shared_ptr<Unique_Graph> unq_graph = std::make_shared<Unique_Graph>(map_obj, 1000, 32);
 
     unq_graph->sample_vertices();
     unq_graph->viz_graph();
 
 // ------------ Hardcode Modes --------------------------------------------
-    Eigen::Vector3f firstmean, secondmean, thirdmean;
-    firstmean << 145, 800, 0;
-    secondmean << 855, 205, 3.14;
+    Eigen::Vector3f firstmean, secondmean, thirdmean, fourthmean;
+    firstmean << 145, 800, 3.14/2;
+    secondmean << 855, 205, -3.14/2;
     thirdmean <<  855, 800, 3.14/2;
+    fourthmean << 145,204, -3.14/2;
 
     Eigen::Matrix3f sigma;
     sigma << 0.01, 0,    0,
              0,    0.01, 0,
              0,    0,    0.01;
 
-    double weight = 1;
+    double weight = 0.25;
 
     mode firstMode(firstmean, sigma, weight);
-    firstMode.visualize_ellipse(map_obj.get());
+    // firstMode.visualize_ellipse(map_obj.get());
     mode secondMode(secondmean, sigma, weight);
     mode thirdMode(thirdmean, sigma, weight);
+    mode fourthMode(fourthmean, sigma, weight);
 
-    vector<mode> modes{firstMode, secondMode, thirdMode};
+    vector<mode> modes{firstMode, secondMode, thirdMode,fourthMode};
 // ----------------------Spawn Ground Truth -----------------------------------
 
     mode groundTruth(firstmean, sigma, weight);
@@ -100,24 +102,28 @@ int main()
     node firstNode (1, firstmean[0], firstmean[1], firstmean[2]);
     node secondNode (2, secondmean[0], secondmean[1], secondmean[2]);
     node thirdNode (3, thirdmean[0], thirdmean[1], thirdmean[2]);
+    node fourthNode(4,fourthmean[0], fourthmean[1], fourthmean[2]);
 
-    vector<node> Nodes{firstNode,secondNode, thirdNode};
+    vector<node> Nodes{firstNode,secondNode, thirdNode, fourthNode};
 
     node firstTarget = unq_graph->target_state(firstNode, Nodes);
     node secondTarget = unq_graph->target_state(secondNode, Nodes);
     node thirdTarget = unq_graph->target_state(thirdNode, Nodes);
+    node fourthTarget = unq_graph->target_state(fourthNode, Nodes);
+    
 
     point_t firstModePoint{firstNode.x, firstNode.y}, firstTargetPoint{firstTarget.x, firstTarget.y};
     point_t secondModePoint{secondNode.x, secondNode.y}, secondTargetPoint{secondTarget.x, secondTarget.y};
     point_t thirdModePoint{thirdNode.x, thirdNode.y}, thirdTargetPoint{thirdTarget.x, thirdTarget.y};
+    point_t fourthModePoint{fourthNode.x, fourthNode.y}, fourthTargetPoint{fourthTarget.x, fourthTarget.y};
 
     vector<point_t> visualizationPoint{firstModePoint, firstTargetPoint, secondModePoint,
-    secondTargetPoint, thirdModePoint, thirdTargetPoint};
+    secondTargetPoint, thirdModePoint, thirdTargetPoint, fourthModePoint, fourthTargetPoint};
 
 
-    // map_obj->visualize_point(firstModePoint);
-    // map_obj->visualize_point(secondModePoint);
-    // map_obj->visualize_point(thirdModePoint);
+    // map_obj->update_visible_landmarks(firstNode,1);
+    // map_obj->update_visible_landmarks(secondNode,1);
+    // map_obj->update_visible_landmarks(thirdNode,1);
 
     // map_obj->visualize_point(firstTargetPoint);
     // map_obj->visualize_point(secondTargetPoint);
@@ -125,7 +131,7 @@ int main()
 // -----------------------Plan to Target State ------------------------
 
     vector<vector<point_t>> plans;
-    for(int counter = 0; counter < 3; counter++)
+    for(int counter = 0; counter < 4; counter++)
     {
         point_t start_point, goal_point;
         Search search;
@@ -139,10 +145,15 @@ int main()
             start_point = secondModePoint;
             goal_point = secondTargetPoint;
         }
-        else
+        else if (counter == 2)
         {
             start_point = thirdModePoint;
             goal_point = thirdTargetPoint;
+        }
+        else{
+            start_point = fourthModePoint;
+            goal_point = fourthTargetPoint;
+
         }
         search.set_start(start_point);
         search.set_goal(goal_point);

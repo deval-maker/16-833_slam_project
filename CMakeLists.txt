@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.5)
 project(slam_project)
 set (CMAKE_CXX_STANDARD 11)
-
+set(CMAKE_CXX_FLAGS "-msse3 -Ofast")
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 include_directories(include)
 find_package(OpenCV REQUIRED)
 find_package(Boost REQUIRED)
