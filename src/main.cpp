@@ -30,7 +30,7 @@ vector<point_t> convert_to_path(point_t start_state, vector<point_t> actions)
 void test_spawn_modes()
 {
   std::cout<<"Testing spawning modes \n";
-  String map_path = "data/map4.txt";
+  String map_path = "data/map5.txt";
   MapReader map_obj = MapReader(map_path);
   map_obj.visualize_map();
 
@@ -56,22 +56,22 @@ int main()
     }
 
 //------------- Map Reader  --------------------------------
-    String map_path = "data/map4.txt";
+    String map_path = "data/map5.txt";
 
     std::shared_ptr<MapReader> map_obj = std::make_shared<MapReader>(map_path);
     map_obj->visualize_map();
 
 //------------- Uniqueness graph creation --------------------------------
-    std::shared_ptr<Unique_Graph> unq_graph = std::make_shared<Unique_Graph>(map_obj, 2000, 32);
+    std::shared_ptr<Unique_Graph> unq_graph = std::make_shared<Unique_Graph>(map_obj, 2500, 32);
 
     unq_graph->sample_vertices();
     unq_graph->viz_graph();
 
 // ------------ Hardcode Modes --------------------------------------------
     Eigen::Vector3f firstmean, secondmean, thirdmean;
-    firstmean << 147, 640, 0;
-    secondmean << 850, 175, 3.14;
-    thirdmean <<  820, 856, 3.14/2;
+    firstmean << 145, 800, 0;
+    secondmean << 855, 205, 3.14;
+    thirdmean <<  855, 800, 3.14/2;
 
     Eigen::Matrix3f sigma;
     sigma << 0.01, 0,    0,
@@ -93,7 +93,7 @@ int main()
 // ------------------------Spawn Modes -----------------------------------
   int modes_num = 10;
 
-  vector<mode> spawned_modes = spawn_modes(groundTruth, sigma, modes_num, map_obj.get());
+//   vector<mode> spawned_modes = spawn_modes(groundTruth, sigma, modes_num, map_obj.get());
    
 
 // -------------Target state computation ------------------

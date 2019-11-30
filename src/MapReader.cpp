@@ -164,7 +164,7 @@ uint8_t MapReader::query_map(int i, int j)
 {
     if (i >= MAP_SIZE_X || j >= MAP_SIZE_Y || i < 0 && j < 0)
     {
-        cout << "[ Error ] Map query: " << i << " " << j << endl;
+        // cout << "[ Error ] Map query: " << i << " " << j << endl;
         return 0;
     }
     else
@@ -384,7 +384,7 @@ point_t MapReader::get_landmark_pose(int landmark_id)
     {
         ret.push_back(-1);
         ret.push_back(-1);
-        cout << "[Error MapReader] Wrong query !" << endl;
+        // cout << "[Error MapReader] Wrong query !" << endl;
 
     }
     else

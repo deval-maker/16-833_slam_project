@@ -101,7 +101,7 @@ MapReader* _map)
                 // std::cout<<"Mean of j: "<<modes_copy[j].mean[0]<<" "<<modes_copy[j].mean[1]<<" "<<
                 // modes_copy[j].mean[2]<<'\n';
                 // std::cout<<"Visualizing j ellipse \n";
-                modes_copy[j].visualize_ellipse(_map);
+                //modes_copy[j].visualize_ellipse(_map);
 
                 // std::cout<<"\n Visualizing k ellipses \n";
 
@@ -128,9 +128,9 @@ MapReader* _map)
                         modes_copy[k].propagate_motion(control[0], control[1]);
                 
                     }
-                    modes_copy[k].visualize_ellipse(_map);
+                   //modes_copy[k].visualize_ellipse(_map);
                     // modes_copy[k].update_measurement(actual_meas,_map);
-                    modes_copy[k].update_weight(actual_meas, _map);
+                    //modes_copy[k].update_weight(actual_meas, _map);
                 }
 
             }
