@@ -29,7 +29,7 @@ Search::Search()
 
 void Search::set_start(point_t startPoint)
 {
-  std::cout<<"Set start "<<startPoint[0]<<" "<<startPoint[1]<<'\n';
+  // std::cout<<"Set start "<<startPoint[0]<<" "<<startPoint[1]<<'\n';
   m_start->x = startPoint[0];
   m_start->y = startPoint[1];
   m_start->g = 0;
@@ -38,7 +38,7 @@ void Search::set_start(point_t startPoint)
 }
 void Search::set_goal(point_t goalPoint)
 {
-  std::cout<<"Set goal "<<goalPoint[0]<<" "<<goalPoint[1]<<'\n';
+  // std::cout<<"Set goal "<<goalPoint[0]<<" "<<goalPoint[1]<<'\n';
   m_goal->x = goalPoint[0];
   m_goal->y = goalPoint[1];
 }

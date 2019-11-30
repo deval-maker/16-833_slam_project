@@ -206,6 +206,7 @@ void mode::update_weight(vector<meas> &gt_meas, MapReader* map)
     double distance = 0;
     vector<meas> observed_measurements = map->get_landmark_measurement(mean);
     int common_landmarks = 0;
+
     for(int i = 0; i < gt_meas.size(); i++)
     {
         auto it = std::find(observed_measurements.begin(), observed_measurements.end(), gt_meas[i]);
@@ -227,7 +228,7 @@ void mode::update_weight(vector<meas> &gt_meas, MapReader* map)
         distance += ((actual_z - measured_z).transpose() * GMM_R.inverse() * (actual_z - measured_z)).value();
     }
 
-
+    std::cout<<"Number of common landmarks "<<common_landmarks<<'\n';
     // if(common_landmarks > 0) std::cout<<"distance is "<<distance<<'\n';
     weight *= exp(-0.5*distance);
 
@@ -239,6 +240,7 @@ void mode::update_weight(vector<meas> &gt_meas, MapReader* map)
         beta += delT;
         double gamma = exp(-pow(10,-4)*alpha*beta);
         weight *= gamma; 
+        std::cout<<"Gamma "<<gamma<<'\n';
     }   
 
 }

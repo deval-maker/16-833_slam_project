@@ -66,14 +66,12 @@ int main()
 
     unq_graph->sample_vertices();
     unq_graph->viz_graph();
-// ------------------------Spawn Modes -----------------------------------
-
 
 // ------------ Hardcode Modes --------------------------------------------
     Eigen::Vector3f firstmean, secondmean, thirdmean;
-    firstmean << 225, 605, 0;
+    firstmean << 147, 640, 0;
     secondmean << 850, 175, 3.14;
-    thirdmean <<  640, 830, 3.14/2;
+    thirdmean <<  820, 856, 3.14/2;
 
     Eigen::Matrix3f sigma;
     sigma << 0.01, 0,    0,
@@ -92,7 +90,12 @@ int main()
 
     mode groundTruth(firstmean, sigma, weight);
 
-    
+// ------------------------Spawn Modes -----------------------------------
+  int modes_num = 10;
+
+  vector<mode> spawned_modes = spawn_modes(groundTruth, sigma, modes_num, map_obj.get());
+   
+
 // -------------Target state computation ------------------
     node firstNode (1, firstmean[0], firstmean[1], firstmean[2]);
     node secondNode (2, secondmean[0], secondmean[1], secondmean[2]);
@@ -147,7 +150,7 @@ int main()
         vector<point_t> actions = search.plan();
         // std::cout<<"actions size "<<actions.size()<<'\n';
         vector<point_t> plan = convert_to_path(start_point, actions);
-        std::cout<<"plan size "<<plan.size()<<'\n';
+        // std::cout<<"plan size "<<plan.size()<<'\n';
 
         map_obj->visualize_path(plan, cv::viz::Color::green());
         plans.push_back(actions);

@@ -20,19 +20,22 @@ Eigen::Vector3f sample_valid_point(MapReader* _map)
 }
 
 vector<mode> spawn_modes(mode original_mode, Eigen::Matrix3f sigma_init,
-  int modes_num, MapReader* _map)
+  int final_modes_num, MapReader* _map)
 {
+  
+  int initial_modes_num = 50; 
   double weight_init = 1.0;
+  double weight_threshold = 0.5;
 
   vector<mode> samples;
 
-  for(int i = 0; i < modes_num - 1; i++)
+  for(int i = 0; i < initial_modes_num - 1; i++)
   {
     mode sample_mode(sample_valid_point(_map), sigma_init, weight_init);
     samples.push_back(sample_mode);
     samples[i].visualize_ellipse(_map);
   }
-  Eigen::Vector3f sample_mean(180,85,0);
+  Eigen::Vector3f sample_mean(147,640,0);
   mode sample_mode(sample_mean, sigma_init, weight_init);
   samples.push_back(sample_mode);
 
@@ -40,16 +43,28 @@ vector<mode> spawn_modes(mode original_mode, Eigen::Matrix3f sigma_init,
   _map->clear_session();
 
   vector<meas> original_measurements = _map->get_landmark_measurement(original_mode.mean);
+  
 
-  for(int i = 0; i < modes_num; i++)
+  while(samples.size() > final_modes_num)
   {
-    samples[i].update_weight(original_measurements,_map);
-    std::cout<<"I "<<i<<" Weight "<<samples[i].weight<<'\n';
-  }
-  std::cout<<"Outside loop \n";
+    _map->clear_session();
+    for(int i = 0; i < samples.size(); i++)
+    {
+      samples[i].update_weight(original_measurements,_map);
+      std::cout<<"I "<<i<<" Weight "<<samples[i].weight<<'\n';
 
-  return {};
+      if(samples[i].weight < weight_threshold)
+      {
+        samples.erase(samples.begin() + i);
+        // std::cout<<"Size of samples "<<samples.size()<<'\n'; 
+        i--;
+      }
+      else samples[i].visualize_ellipse(_map);
+    }
+    std::cout<<"\n\n";
+    _map->viz_session();
+  }
+  return samples;
   // for()
 
 }
-

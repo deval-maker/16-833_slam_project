@@ -60,7 +60,7 @@ vector<point_t> convert_to_path_propagate(point_t start_state, vector<point_t> a
 void propagate_policy(vector<point_t> actions, mode groundTruth, vector<mode> modes, 
 MapReader* _map)
 {
-
+    std::cout<<"[INFO] Propogating modes using Optimal Policy"<<"\n";
     point_t groundTruth_start_state{groundTruth.mean[0], groundTruth.mean[1]};
 
 
@@ -141,7 +141,7 @@ MapReader* _map)
 
     for(int i = 0; i < modes.size(); i++)
     {
-        std::cout<<"Final weight of mode : "<<i<<" "<<modes[i].weight<<'\n';
+        std::cout<<"[INFO] Final weight of mode : "<<i<<" "<<modes[i].weight<<'\n';
     }
 
 }

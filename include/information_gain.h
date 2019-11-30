@@ -62,7 +62,7 @@ MapReader* _map)
 
     for(int i = 0; i < paths.size(); i++)
     {
-        std::cout<<"Path number "<<i<<'\n';
+        std::cout<<"[INFO] Simulating Path: "<<i<<'\n';
         int information_gain_policy = 0;
 
         std::vector<std::vector<point_t>> plans;
@@ -75,7 +75,7 @@ MapReader* _map)
 
         for(int j = 0; j < modes.size(); j++)
         {
-            std::cout<<"j th mode is "<<j<<'\n';
+            std::cout<<" j th mode is "<<j<<'\n';
             int information_gain_mode = 0;
 
             vector<mode> modes_copy = modes;
@@ -148,7 +148,7 @@ MapReader* _map)
     }
     for(int i = 0; i<information_gains.size(); i++)
     {
-    std::cout<<"Information gain "<<information_gains[i]<<'\n';
+    std::cout<<"[INFO] Information Gain for Policy "<<i<<" is "<<information_gains[i]<<'\n';
 
     }
     return distance(information_gains.begin(), max_element(information_gains.begin(), information_gains.end()));
