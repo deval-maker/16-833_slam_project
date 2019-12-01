@@ -97,13 +97,14 @@ int main()
 
   vector<mode> spawned_modes = spawn_modes(groundTruth, sigma, modes_num, map_obj.get());
   vector<node> spawnedNodes;
-
+  vector<point_t> visualization_point;
    for(int i = 0; i < spawned_modes.size(); i++)
     {
         node i_node(i+1, spawned_modes[i].mean[0], spawned_modes[i].mean[1], 
         spawned_modes[i].mean[2]);
         spawnedNodes.push_back(i_node);
         point_t modePoint{i_node.x, i_node.y, i_node.theta};
+        visualization_point.push_back(modePoint);
         map_obj->visualize_point_and_dir(modePoint, cv::viz::Color::red());
     }
     std::cout<<"Spawned modes printed \n";
@@ -120,68 +121,16 @@ int main()
         map_obj->visualize_point_and_dir(targetPoint, cv::viz::Color::green());
     }
     std::cout<<"Visualising start and goal points \n";
-    map_obj->viz_session();
-    return 0;
-    node firstNode (1, firstmean[0], firstmean[1], firstmean[2]);
-    node secondNode (2, secondmean[0], secondmean[1], secondmean[2]);
-    node thirdNode (3, thirdmean[0], thirdmean[1], thirdmean[2]);
-    node fourthNode(4,fourthmean[0], fourthmean[1], fourthmean[2]);
+    map_obj->viz_session();   
 
-    vector<node> Nodes{firstNode,secondNode, thirdNode, fourthNode};
-
-    node firstTarget = unq_graph->target_state(firstNode, Nodes);
-    node secondTarget = unq_graph->target_state(secondNode, Nodes);
-    node thirdTarget = unq_graph->target_state(thirdNode, Nodes);
-    node fourthTarget = unq_graph->target_state(fourthNode, Nodes);
-    
-
-    point_t firstModePoint{firstNode.x, firstNode.y, firstNode.theta}, firstTargetPoint{firstTarget.x, firstTarget.y,firstTarget.theta};
-    point_t secondModePoint{secondNode.x, secondNode.y, secondNode.theta}, secondTargetPoint{secondTarget.x, secondTarget.y, secondTarget.theta};
-    point_t thirdModePoint{thirdNode.x, thirdNode.y, thirdNode.theta}, thirdTargetPoint{thirdTarget.x, thirdTarget.y, thirdTarget.theta};
-    point_t fourthModePoint{fourthNode.x, fourthNode.y, fourthNode.theta}, fourthTargetPoint{fourthTarget.x, fourthTarget.y, fourthTarget.theta};
-
-
-    vector<point_t> visualizationPoint{firstModePoint, firstTargetPoint, secondModePoint,
-    secondTargetPoint, thirdModePoint, thirdTargetPoint, fourthModePoint, fourthTargetPoint};
-
-    for(int i = 0; i < visualizationPoint.size(); i++)
-    {
-        map_obj->visualize_point_and_dir(visualizationPoint[i], cv::viz::Color::red());
-    }
-    // map_obj->update_visible_landmarks(firstNode,1);
-    // map_obj->update_visible_landmarks(secondNode,1);
-    // map_obj->update_visible_landmarks(thirdNode,1);
-
-    // map_obj->visualize_point(firstTargetPoint);
-    // map_obj->visualize_point(secondTargetPoint);
-    // map_obj->visualize_point(thirdTargetPoint);
 // -----------------------Plan to Target State ------------------------
 
     vector<vector<point_t>> plans;
-    for(int counter = 0; counter < 4; counter++)
+    for(int i = 0; i < spawned_modes.size(); i++)
     {
-        point_t start_point, goal_point;
+        point_t start_point{spawned_modes[i].mean[0], spawned_modes[i].mean[1], spawned_modes[i].mean[2]};
+        point_t goal_point{Targets[i].x, Targets[i].y, Targets[i].theta};
         Search search;
-        if(counter == 0)
-        {
-            start_point = firstModePoint;
-            goal_point = firstTargetPoint;
-        }
-        else if(counter == 1)
-        {
-            start_point = secondModePoint;
-            goal_point = secondTargetPoint;
-        }
-        else if (counter == 2)
-        {
-            start_point = thirdModePoint;
-            goal_point = thirdTargetPoint;
-        }
-        else{
-            start_point = fourthModePoint;
-            goal_point = fourthTargetPoint;
-
-        }
         search.set_start(start_point);
         search.set_goal(goal_point);
         search.set_mapReader(map_obj.get());
