@@ -122,7 +122,7 @@ void MapReader::visualize_ellipse(Eigen::Vector2f mean, Eigen::Matrix2f sigma)
     // find angle of eigvector fo largest eigen value
     double theta = atan2(double(eigensolver.eigenvectors()(1, 0)), double(eigensolver.eigenvectors()(0, 0)));
     // cout << "theta of ellipse" << theta << endl;
-    double factor = 1;
+    double factor = 100;
     double a = eigensolver.eigenvalues()(1,0);
     if(isnan(a) || a <= 0)
     {
@@ -194,7 +194,7 @@ double MapReader::correct_range(double angle)
 
 float MapReader::toRadian(float degree)
 {
-    return (degree*PI)/180;
+    return (degree*M_PI)/180;
 }
 
 void MapReader::update_visible_landmarks(node &x_t, bool visualize)
@@ -294,10 +294,10 @@ vector<meas> MapReader::get_landmark_measurement(Eigen::Vector3f curr_pose)
     bool visualize = false;
 
     double curr_orient = curr_pose[2];
-    curr_orient = correct_range(curr_orient);
+    curr_orient = wrap2pi_util(curr_orient);
 
     double start = curr_orient - toRadian(laser_fov/2);
-    start = correct_range(start);
+    start = wrap2pi_util(start);
 
     double robox = curr_pose[0];
     double roboy = curr_pose[1];
@@ -340,7 +340,9 @@ vector<meas> MapReader::get_landmark_measurement(Eigen::Vector3f curr_pose)
                     measurement.landmark_id = hit_point;
                     double dist = sqrt(pow(robox - newx, 2) + pow(roboy - newy, 2));
                     measurement.dist = dist;
-                    measurement.psi = wrap2pi_util(angle - curr_orient);
+                    measurement.psi = wrap2pi_util(-curr_orient + angle);
+                    // measurement.psi = angle;
+
                     measurement.is_visible = true;
 
                     if(!visible_landmarks.count(hit_point))

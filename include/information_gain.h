@@ -57,7 +57,7 @@ int get_optimal_policy(vector<vector<point_t>> paths, vector<mode> modes,
 MapReader* _map)
 {
     std::cout<<"[INFO] Choosing the optimal policy \n";
-    double wt_threshold = 0.2;
+    double wt_threshold = exp(-20);
     std::vector<double> information_gains;
 
     for(int i = 0; i < paths.size(); i++)
@@ -135,18 +135,18 @@ MapReader* _map)
                     modes_copy[k].update_weight(actual_meas, _map);
                     // std::cout<<"Weight for mode "<<k<<" "<<modes_copy[k].weight<<"\n";
                 }
-                _map->viz_session();
+                // _map->viz_session();
 
             }
 
             for(int k = 0; k < modes_copy.size(); k++)
             {
                 std::cout<<"[DEBUG] Weight for Mode "<<k<<" is "<<modes_copy[k].weight<<std::endl;
-                if(modes_copy[k].weight < wt_threshold)
+                if(modes_copy[k].weight <= wt_threshold)
                     information_gain_mode++;
                 
             }
-            information_gain_policy += modes[j].weight * information_gain_mode;
+            information_gain_policy += information_gain_mode;
 
         }
         information_gains.push_back(information_gain_policy);

@@ -220,13 +220,21 @@ void mode::update_weight(vector<meas> &gt_meas, MapReader* map)
 
         Eigen::MatrixXf measured_z(2,1);
         measured_z << observed_measurement.dist, observed_measurement.psi;
-        std::cout<<"Landmark ID "<<gt_meas[i].landmark_id<<" "<<observed_measurement.landmark_id<<'\n';
-        std::cout<<"Actual z \n"<<actual_z<<'\n';
-        std::cout<<"measured z \n"<<measured_z<<'\n';
-        std::cout<<"Difference \n"<<(actual_z - measured_z)<<'\n';
-        std::cout<<"Inverse \n"<<GMM_R.inverse()<<'\n';
 
-        distance += ((actual_z - measured_z).transpose() * GMM_R.inverse() * (actual_z - measured_z)).value();
+        Eigen::MatrixXf difference_z(2,1);
+        difference_z = actual_z - measured_z;
+        // difference_z(1,0) = wrap2pi(difference_z(1,0));
+        difference_z(1,0) = atan2(sin(gt_meas[i].psi-observed_measurement.psi), cos(gt_meas[i].psi-observed_measurement.psi));
+        difference_z(0,0) = 0.001 * difference_z(0,0);
+
+
+        // std::cout<<"Landmark ID "<<gt_meas[i].landmark_id<<" "<<observed_measurement.landmark_id<<'\n';
+        // std::cout<<"Actual z \n"<<gt_meas[i].toStr()<<'\n';
+        // std::cout<<"measured z \n"<<observed_measurement.toStr()<<'\n';
+        // std::cout<<"Difference \n"<<difference_z<<'\n';
+        // std::cout<<"Inverse \n"<<GMM_R.inverse()<<'\n';
+
+        distance += (difference_z.transpose() * GMM_R.inverse() * difference_z).value();
     }
 
     // std::cout<<"Number of Common Landmarks "<<common_landmarks<<'\n';
@@ -239,7 +247,7 @@ void mode::update_weight(vector<meas> &gt_meas, MapReader* map)
         double alpha = std::max(1 + observed_measurements.size() - common_landmarks, 
         1 + gt_meas.size() - common_landmarks);
         beta += delT;
-        double gamma = exp(-pow(10,-4)*alpha*beta);
+        double gamma = exp(-pow(10,-1)*alpha*beta);
         weight *= gamma; 
         // std::cout<<"Gamma "<<gamma<<'\n';
     }   

@@ -28,6 +28,11 @@ class mode{
         Eigen::Matrix3f getGt(double v, double theta);
         Eigen::MatrixXf getHt(double q, Eigen::Vector2f delta);
         void visualize_ellipse(MapReader* map);
+     
+        string toStr()
+        {
+            return  "x: " + to_string(mean[0]) + " y: " + to_string(mean[1]) +  " theta: " + to_string(mean[2]*180/M_PI) + " degrees" + " Weight: " + to_string(weight) ;
+        }
 
     private:
 

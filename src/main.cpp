@@ -56,7 +56,7 @@ int main()
     }
 
 //------------- Map Reader  --------------------------------
-    String map_path = "data/map7.txt";
+    String map_path = "data/map_dummy.txt";
 
     std::shared_ptr<MapReader> map_obj = std::make_shared<MapReader>(map_path);
     map_obj->visualize_map();
@@ -65,14 +65,14 @@ int main()
     std::shared_ptr<Unique_Graph> unq_graph = std::make_shared<Unique_Graph>(map_obj, 1000, 32);
 
     unq_graph->sample_vertices();
-    unq_graph->viz_graph();
+    // unq_graph->viz_graph();
 
 // ------------ Hardcode Modes --------------------------------------------
     Eigen::Vector3f firstmean, secondmean, thirdmean, fourthmean;
-    firstmean << 145, 800, 3.14/2;
-    secondmean << 855, 205, -3.14/2;
-    thirdmean <<  855, 800, 3.14/2;
-    fourthmean << 145,204, -3.14/2;
+    firstmean << 150, 200, -M_PI/2;
+    secondmean << 257, 800, M_PI/2;
+    thirdmean <<  855, 200, -M_PI/2;
+    fourthmean << 855,800, M_PI/2;
 
     Eigen::Matrix3f sigma;
     sigma << 0.01, 0,    0,
@@ -93,12 +93,35 @@ int main()
     mode groundTruth(firstmean, sigma, weight);
 
 // ------------------------Spawn Modes -----------------------------------
-  int modes_num = 10;
+  int modes_num = 5;
 
-//   vector<mode> spawned_modes = spawn_modes(groundTruth, sigma, modes_num, map_obj.get());
-   
+  vector<mode> spawned_modes = spawn_modes(groundTruth, sigma, modes_num, map_obj.get());
+  vector<node> spawnedNodes;
+
+   for(int i = 0; i < spawned_modes.size(); i++)
+    {
+        node i_node(i+1, spawned_modes[i].mean[0], spawned_modes[i].mean[1], 
+        spawned_modes[i].mean[2]);
+        spawnedNodes.push_back(i_node);
+        point_t modePoint{i_node.x, i_node.y, i_node.theta};
+        map_obj->visualize_point_and_dir(modePoint, cv::viz::Color::red());
+    }
+    std::cout<<"Spawned modes printed \n";
+    std::cout<<"Number of spawned modes "<<spawned_modes.size()<<'\n';
+    map_obj->viz_session();
 
 // -------------Target state computation ------------------
+    vector<node> Targets;
+    for(int i = 0; i < spawnedNodes.size(); i++)
+    {
+        node Target = unq_graph->target_state(spawnedNodes[i], spawnedNodes);
+        Targets.push_back(Target);
+        point_t targetPoint{Target.x, Target.y, Target.theta};
+        map_obj->visualize_point_and_dir(targetPoint, cv::viz::Color::green());
+    }
+    std::cout<<"Visualising start and goal points \n";
+    map_obj->viz_session();
+    return 0;
     node firstNode (1, firstmean[0], firstmean[1], firstmean[2]);
     node secondNode (2, secondmean[0], secondmean[1], secondmean[2]);
     node thirdNode (3, thirdmean[0], thirdmean[1], thirdmean[2]);
@@ -112,15 +135,19 @@ int main()
     node fourthTarget = unq_graph->target_state(fourthNode, Nodes);
     
 
-    point_t firstModePoint{firstNode.x, firstNode.y}, firstTargetPoint{firstTarget.x, firstTarget.y};
-    point_t secondModePoint{secondNode.x, secondNode.y}, secondTargetPoint{secondTarget.x, secondTarget.y};
-    point_t thirdModePoint{thirdNode.x, thirdNode.y}, thirdTargetPoint{thirdTarget.x, thirdTarget.y};
-    point_t fourthModePoint{fourthNode.x, fourthNode.y}, fourthTargetPoint{fourthTarget.x, fourthTarget.y};
+    point_t firstModePoint{firstNode.x, firstNode.y, firstNode.theta}, firstTargetPoint{firstTarget.x, firstTarget.y,firstTarget.theta};
+    point_t secondModePoint{secondNode.x, secondNode.y, secondNode.theta}, secondTargetPoint{secondTarget.x, secondTarget.y, secondTarget.theta};
+    point_t thirdModePoint{thirdNode.x, thirdNode.y, thirdNode.theta}, thirdTargetPoint{thirdTarget.x, thirdTarget.y, thirdTarget.theta};
+    point_t fourthModePoint{fourthNode.x, fourthNode.y, fourthNode.theta}, fourthTargetPoint{fourthTarget.x, fourthTarget.y, fourthTarget.theta};
+
 
     vector<point_t> visualizationPoint{firstModePoint, firstTargetPoint, secondModePoint,
     secondTargetPoint, thirdModePoint, thirdTargetPoint, fourthModePoint, fourthTargetPoint};
 
-
+    for(int i = 0; i < visualizationPoint.size(); i++)
+    {
+        map_obj->visualize_point_and_dir(visualizationPoint[i], cv::viz::Color::red());
+    }
     // map_obj->update_visible_landmarks(firstNode,1);
     // map_obj->update_visible_landmarks(secondNode,1);
     // map_obj->update_visible_landmarks(thirdNode,1);

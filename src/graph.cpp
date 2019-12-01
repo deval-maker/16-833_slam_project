@@ -87,7 +87,7 @@ node Unique_Graph::target_state(node targetMode, std::vector<node> modes)
   point_t targetModePoint{double(targetMode.x),double(targetMode.y),double(targetMode.theta)};
   pointVec targetNeighborPoints = knn_tree.neighborhood_points(targetModePoint,m_maxTargetDist);
   
-  map->visualize_path(targetNeighborPoints, cv::viz::Color::yellow());
+  map->visualize_path(targetNeighborPoints, cv::viz::Color::violet());
   
   // std::cout<<"Target Neighbor points size "<<targetNeighborPoints.size()<<'\n';
 
