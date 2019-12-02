@@ -56,22 +56,28 @@ vector<mode> spawn_modes(mode original_mode, Eigen::Matrix3f sigma_init,
     samples[i].visualize_ellipse(_map);
   }
 
-  // Eigen::Vector3f sample_mean(150,800,-M_PI/2);
-  // mode sample_mode(sample_mean, sigma_init, weight_init);
-  // samples.push_back(sample_mode);
-  // Eigen::Vector3f sample_mean2(150,800,3.14/2);
-  // mode sample_mode2(sample_mean2, sigma_init, weight_init);
-  // samples.push_back(sample_mode2);
+  Eigen::Vector3f sample_mean(150,200,-M_PI/2);
+  mode sample_mode(sample_mean, sigma_init, weight_init);
+  samples.push_back(sample_mode);
+  Eigen::Vector3f sample_mean2(150,800,M_PI/2);
+  mode sample_mode2(sample_mean2, sigma_init, weight_init);
+  samples.push_back(sample_mode2);
+  Eigen::Vector3f sample_mean3(850,200,-M_PI/2);
+  mode sample_mode3(sample_mean3, sigma_init, weight_init);
+  samples.push_back(sample_mode3);
+  Eigen::Vector3f sample_mean4(850,800,M_PI/2);
+  mode sample_mode4(sample_mean4, sigma_init, weight_init);
+  samples.push_back(sample_mode4);
 
-  _map->viz_session();
-  _map->clear_session();
+  // _map->viz_session();
+  // _map->clear_session();
 
   vector<meas> original_measurements = _map->get_landmark_measurement(original_mode.mean);
   
 
   while(samples.size() > final_modes_num)
   {
-    _map->clear_session();
+    // _map->clear_session();
     for(int i = 0; i < samples.size(); i++)
     {
 
@@ -91,13 +97,14 @@ vector<mode> spawn_modes(mode original_mode, Eigen::Matrix3f sigma_init,
       else samples[i].visualize_ellipse(_map);
     }
     // std::cout<<"\n\n";
-    _map->viz_session();
+    // _map->viz_session();
   }
 
   for(int i = 0; i < samples.size(); i++)
   {
     samples[i].weight = 1.0/samples.size();
   }
+  _map->clear_session();
   return samples;
   // for()
 

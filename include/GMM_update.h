@@ -72,12 +72,12 @@ vector<point_t> convert_to_path_propagate(point_t start_state, vector<point_t> a
     return plan;
 }
 
-void propagate_policy(vector<point_t> actions, mode groundTruth, vector<mode> modes, 
+int propagate_policy(vector<point_t> actions, mode &groundTruth, vector<mode> &modes, 
 MapReader* _map, int index_optimal_policy)
 {
     std::cout<<"[INFO] Propogating modes using Optimal Policy"<<"\n";
     point_t groundTruth_start_state{groundTruth.mean[0], groundTruth.mean[1]};
-    double wt_threshold = pow(10,-5);
+    double wt_threshold = 5*pow(10,-2);
 
 
     _map->clear_session();
@@ -167,8 +167,10 @@ MapReader* _map, int index_optimal_policy)
 
             point_t current_state{modes[k].mean[0], modes[k].mean[1], modes[k].mean[2]};
 
+            std::cout<<"Intermediate weight of mode : "<<k<<" "<<modes[k].weight<<'\n';
             if(modes[k].weight > wt_threshold)
                 _map->visualize_point_and_dir(current_state, cv::viz::Color::red());
+            else return k;
 
         }
 
@@ -180,7 +182,6 @@ MapReader* _map, int index_optimal_policy)
             
             modes[i].weight /= weight_sum;
 
-            std::cout<<"Intermediate weight of mode : "<<i<<" "<<modes[i].weight<<'\n';
         }
 
         std::cout<<"\n\n";

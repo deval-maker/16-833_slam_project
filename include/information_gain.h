@@ -25,6 +25,10 @@ vector<point_t> get_control(point_t start_state, point_t goal_state, MapReader* 
         is_goal_reached = c1.next_time_step(steer_velos);
 
         c1.set_node_state(n1);
+        // std::cout<<"start"<<start_state[0]<<" "<<start_state[1]<<" "<<start_state[2]<<"\n";
+        // std::cout<<"goal"<<goal_state[0]<<" "<<goal_state[1]<<" "<<goal_state[2]<<"\n";
+        // std::cout<<"curr_state"<<"\n";
+        // std::cout<<n1<<std::endl;
         step_vels.push_back(steer_velos.linx);
         step_vels.push_back(steer_velos.ang);
         controls.push_back(step_vels);
@@ -85,6 +89,7 @@ MapReader* _map)
 
             for(int t = 0; t < plans[i].size(); t++)
             {
+                std::cout<<"Timstep "<<t<<'\n';
                 double goal[2];
 
                 point_t start_state, goal_state;
@@ -95,16 +100,25 @@ MapReader* _map)
                 goal_state.push_back(plans[j][t][0]);
                 goal_state.push_back(plans[j][t][1]);
 
-                vector<point_t> controls = get_control(start_state, goal_state, _map);
+                std::cout<<"Before Get control \n";
+                std::cout<<start_state[0]<<" "<<start_state[1]<<" "<<start_state[2]<<"\n";
+                std::cout<<goal_state[0]<<" "<<goal_state[1]<<" "<<goal_state[2]<<"\n";
 
-                for(auto control: controls){
-                    modes_copy[j].propagate_motion(control[0], control[1]);
+                if(start_state[0] >= 0 && start_state[1] >= 0)
+                {
+                    vector<point_t> controls = get_control(start_state, goal_state, _map);
+                    std::cout<<"After Get control \n";
 
+                    for(auto control: controls){
+                        modes_copy[j].propagate_motion(control[0], control[1]);
+
+                    }
+                    std::cout<<"Propagated motion of jth mode \n";
                 }
                 // std::cout<<"Mean of j: "<<modes_copy[j].mean[0]<<" "<<modes_copy[j].mean[1]<<" "<<
                 // modes_copy[j].mean[2]<<'\n';
                 // std::cout<<"Visualizing j ellipse \n";
-                modes_copy[j].visualize_ellipse(_map);
+                // modes_copy[j].visualize_ellipse(_map);
                 
                 // std::cout<<"\n Visualizing k ellipses \n";
 
@@ -127,13 +141,17 @@ MapReader* _map)
                     goal_state.push_back(plans[k][t][0]);
                     goal_state.push_back(plans[k][t][1]);
 
+                    std::cout<<start_state[0]<<" "<<start_state[1]<<" "<<start_state[2]<<"\n";
+                    std::cout<<goal_state[0]<<" "<<goal_state[1]<<" "<<goal_state[2]<<"\n";
+
                     vector<point_t> controls = get_control(start_state, goal_state, _map);
+                    std::cout<<"after get control2"<<"\n";
                 //
                     for(auto control: controls){
                         modes_copy[k].propagate_motion(control[0], control[1]);
                 
                     }
-                    modes_copy[k].visualize_ellipse(_map);
+                    // modes_copy[k].visualize_ellipse(_map);
                     // modes_copy[k].update_measurement(actual_meas,_map);
                     // std::cout<<"Updating weight for Mode "<<k<<"\n";
                     modes_copy[k].update_weight(actual_meas, _map,t);
@@ -147,6 +165,7 @@ MapReader* _map)
                     // std::cout<<"Weight for mode "<<k<<" "<<modes_copy[k].weight<<"\n";
                 }
 
+                std::cout<<"Propagated motion of the kth modes; Path length"<<plans[i].size()<< "\n";
 
                 for(int i = 0; i < modes_copy.size(); i++)
                 {
@@ -156,7 +175,7 @@ MapReader* _map)
                     
                     modes_copy[i].weight /= weight_sum;
 
-                    // std::cout<<"Intermediate weight of mode : "<<i<<" "<<modes_copy[i].weight<<'\n';
+                    std::cout<<"Intermediate weight of mode : "<<i<<" "<<modes_copy[i].weight<<'\n';
                 }
 
                 // _map->viz_session();
