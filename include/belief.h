@@ -22,7 +22,10 @@ class mode{
         void propagate_mode(double v, double omega,vector<meas> &gt_meas,MapReader* map );
         void propagate_motion(double v, double omega);
         void update_measurement(vector<meas> &gt_meas, MapReader* map);
-        void update_weight(vector<meas> &gt_meas,MapReader* map);
+
+        void update_weight(vector<meas> &gt_meas,MapReader* map, int time_step, double factor = pow(10,-2),
+        double angle_factor = 0.00001, double dist_factor = 0.00001);
+        
         mode();
         mode(Eigen::Vector3f mean, Eigen::Matrix3f sigma,double weight);
         Eigen::Matrix3f getGt(double v, double theta);

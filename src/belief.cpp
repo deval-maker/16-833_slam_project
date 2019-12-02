@@ -6,7 +6,7 @@ mode::mode(){
          0, 0.00, 0,
          0, 0, 0.00;
 
-   GMM_R << 100, 0,
+   GMM_R << 1000, 0,
             0, 0.3;
 
     Q << 0.00, 0,
@@ -21,7 +21,7 @@ mode::mode(Eigen::Vector3f mean, Eigen::Matrix3f sigma, double weight)
         0, 0.00, 0,
         0, 0, 0.00;
 
-    GMM_R << 100, 0,
+    GMM_R << 10000, 0,
              0, 0.3;
 
     Q << 0.00, 0,
@@ -201,12 +201,13 @@ void mode::update_measurement(vector<meas> &gt_meas, MapReader* map)
 
 }
 
-void mode::update_weight(vector<meas> &gt_meas, MapReader* map)
+void mode::update_weight(vector<meas> &gt_meas, MapReader* map, int time_step, double factor, 
+double angle_factor, double dist_factor)
 {
     double distance = 0;
     vector<meas> observed_measurements = map->get_landmark_measurement(mean);
     int common_landmarks = 0;
-
+    // std::cout<<"\n\n Updating weight for new mode \n";
     for(int i = 0; i < gt_meas.size(); i++)
     {
         auto it = std::find(observed_measurements.begin(), observed_measurements.end(), gt_meas[i]);
@@ -224,8 +225,8 @@ void mode::update_weight(vector<meas> &gt_meas, MapReader* map)
         Eigen::MatrixXf difference_z(2,1);
         difference_z = actual_z - measured_z;
         // difference_z(1,0) = wrap2pi(difference_z(1,0));
-        difference_z(1,0) = atan2(sin(gt_meas[i].psi-observed_measurement.psi), cos(gt_meas[i].psi-observed_measurement.psi));
-        difference_z(0,0) = 0.001 * difference_z(0,0);
+        difference_z(1,0) = angle_factor * atan2(sin(gt_meas[i].psi-observed_measurement.psi), cos(gt_meas[i].psi-observed_measurement.psi));
+        difference_z(0,0) = dist_factor * difference_z(0,0);
 
 
         // std::cout<<"Landmark ID "<<gt_meas[i].landmark_id<<" "<<observed_measurement.landmark_id<<'\n';
@@ -236,7 +237,7 @@ void mode::update_weight(vector<meas> &gt_meas, MapReader* map)
 
         distance += (difference_z.transpose() * GMM_R.inverse() * difference_z).value();
     }
-
+    // std::cout<<"Distance "<<distance<<"\n";
     // std::cout<<"Number of Common Landmarks "<<common_landmarks<<'\n';
     // if(common_landmarks > 0) std::cout<<"distance is "<<distance<<'\n';
     weight *= exp(-0.5*distance);
@@ -247,7 +248,7 @@ void mode::update_weight(vector<meas> &gt_meas, MapReader* map)
         double alpha = std::max(1 + observed_measurements.size() - common_landmarks, 
         1 + gt_meas.size() - common_landmarks);
         beta += delT;
-        double gamma = exp(-pow(10,-1)*alpha*beta);
+        double gamma = exp(-factor*alpha*beta);
         weight *= gamma; 
         // std::cout<<"Gamma "<<gamma<<'\n';
     }   

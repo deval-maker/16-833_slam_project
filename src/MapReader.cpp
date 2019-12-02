@@ -122,7 +122,7 @@ void MapReader::visualize_ellipse(Eigen::Vector2f mean, Eigen::Matrix2f sigma)
     // find angle of eigvector fo largest eigen value
     double theta = atan2(double(eigensolver.eigenvectors()(1, 0)), double(eigensolver.eigenvectors()(0, 0)));
     // cout << "theta of ellipse" << theta << endl;
-    double factor = 100;
+    double factor = 1;
     double a = eigensolver.eigenvalues()(1,0);
     if(isnan(a) || a <= 0)
     {
@@ -197,13 +197,22 @@ float MapReader::toRadian(float degree)
     return (degree*M_PI)/180;
 }
 
+double wrapMax_util(double x, double max)
+{
+    return fmod(max + fmod(x, max), max);
+}
+double wrap2pi_util(double x)
+{
+    return -M_PI + wrapMax_util(x + (M_PI), 2*M_PI );
+}
+
 void MapReader::update_visible_landmarks(node &x_t, bool visualize)
 {
     double curr_orient = x_t.theta;
-    curr_orient = correct_range(curr_orient);
+    curr_orient = wrap2pi_util(curr_orient);
 
     double start = curr_orient - toRadian(laser_fov/2);
-    start = correct_range(start);
+    start = wrap2pi_util(start);
 
     double robox = x_t.x;
     double roboy = x_t.y;
@@ -277,14 +286,6 @@ void MapReader::update_visible_landmarks(node &x_t, bool visualize)
         cv::waitKey(10);
     }
 
-}
-double wrapMax_util(double x, double max)
-{
-    return fmod(max + fmod(x, max), max);
-}
-double wrap2pi_util(double x)
-{
-    return -M_PI + wrapMax_util(x + (M_PI), 2*M_PI );
 }
 
 vector<meas> MapReader::get_landmark_measurement(Eigen::Vector3f curr_pose)

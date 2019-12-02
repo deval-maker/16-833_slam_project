@@ -14,8 +14,8 @@ private:
     int total_landmarks = 254;
     static const int stepsize = 1;
     double delta_theta = stepsize * M_PI/180.0;
-    float delta_dist = 0.5;
-    float laser_fov = 90;
+    float delta_dist = 1;
+    float laser_fov = 360;
     vector<point_t> landmark_lookup;
 
     // images

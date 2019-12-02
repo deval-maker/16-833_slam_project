@@ -57,13 +57,13 @@ int get_optimal_policy(vector<vector<point_t>> paths, vector<mode> modes,
 MapReader* _map)
 {
     std::cout<<"[INFO] Choosing the optimal policy \n";
-    double wt_threshold = exp(-20);
+    double wt_threshold = exp(-2);
     std::vector<double> information_gains;
-
+    double collision_penalty = 100;  
     for(int i = 0; i < paths.size(); i++)
     {
         std::cout<<"[INFO] Simulating Path: "<<i<<'\n';
-        int information_gain_policy = 0;
+        double information_gain_policy = 0;
 
         std::vector<std::vector<point_t>> plans;
 
@@ -76,6 +76,8 @@ MapReader* _map)
 
         for(int j = 0; j < modes.size(); j++)
         {
+            std::unordered_set<int> colliding_modes;
+
             std::cout<<" j th mode is "<<j<<'\n';
             int information_gain_mode = 0;
 
@@ -103,15 +105,17 @@ MapReader* _map)
                 // modes_copy[j].mean[2]<<'\n';
                 // std::cout<<"Visualizing j ellipse \n";
                 modes_copy[j].visualize_ellipse(_map);
-
+                
                 // std::cout<<"\n Visualizing k ellipses \n";
 
                 Eigen::Vector3f pose_mode_j = modes_copy[j].mean;
                 vector<meas> actual_meas = _map->get_landmark_measurement(pose_mode_j);
-                
+                modes_copy[j].update_weight(actual_meas,_map,t);
+
                 for(int k = 0; k < modes_copy.size(); k++)
                 {
                     if(k == j) continue;
+                    if(colliding_modes.find(k) != colliding_modes.end()) continue; 
                 //  
                     // std::cout<<" "<<"\n";
                     // std::cout<<"[DEBUG] Propogating mode "<<k<<std::endl;
@@ -132,9 +136,29 @@ MapReader* _map)
                     modes_copy[k].visualize_ellipse(_map);
                     // modes_copy[k].update_measurement(actual_meas,_map);
                     // std::cout<<"Updating weight for Mode "<<k<<"\n";
-                    modes_copy[k].update_weight(actual_meas, _map);
+                    modes_copy[k].update_weight(actual_meas, _map,t);
+                    if(_map->query_map(modes_copy[k].mean[1], modes_copy[k].mean[0]) != 255)
+                    {
+                        colliding_modes.insert(k);
+                        information_gain_policy -= double(collision_penalty)/t;
+                        // std::cout<<"Current collision penalty "<<double(collision_penalty)/t;
+                        // std::cout<<"Information gain policy"<<information_gain_policy<<'\n';
+                    }
                     // std::cout<<"Weight for mode "<<k<<" "<<modes_copy[k].weight<<"\n";
                 }
+
+
+                for(int i = 0; i < modes_copy.size(); i++)
+                {
+                    double weight_sum = 0;
+                    for(int i = 0; i < modes_copy.size(); i++)
+                        weight_sum += modes_copy[i].weight; 
+                    
+                    modes_copy[i].weight /= weight_sum;
+
+                    // std::cout<<"Intermediate weight of mode : "<<i<<" "<<modes_copy[i].weight<<'\n';
+                }
+
                 // _map->viz_session();
 
             }

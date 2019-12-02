@@ -93,7 +93,7 @@ int main()
     mode groundTruth(firstmean, sigma, weight);
 
 // ------------------------Spawn Modes -----------------------------------
-  int modes_num = 5;
+  int modes_num = 4;
 
   vector<mode> spawned_modes = spawn_modes(groundTruth, sigma, modes_num, map_obj.get());
   vector<node> spawnedNodes;
@@ -109,7 +109,7 @@ int main()
     }
     std::cout<<"Spawned modes printed \n";
     std::cout<<"Number of spawned modes "<<spawned_modes.size()<<'\n';
-    map_obj->viz_session();
+    // map_obj->viz_session();
 
 // -------------Target state computation ------------------
     vector<node> Targets;
@@ -119,9 +119,10 @@ int main()
         Targets.push_back(Target);
         point_t targetPoint{Target.x, Target.y, Target.theta};
         map_obj->visualize_point_and_dir(targetPoint, cv::viz::Color::green());
+        visualization_point.push_back(targetPoint);
     }
     std::cout<<"Visualising start and goal points \n";
-    map_obj->viz_session();   
+    // map_obj->viz_session();   
 
 // -----------------------Plan to Target State ------------------------
 
@@ -137,8 +138,7 @@ int main()
         vector<point_t> actions = search.plan();
         // std::cout<<"actions size "<<actions.size()<<'\n';
         vector<point_t> plan = convert_to_path(start_point, actions);
-        // std::cout<<"plan size "<<plan.size()<<'\n';
-
+        std::cout<<"plan size "<<plan.size()<<'\n';
         map_obj->visualize_path(plan, cv::viz::Color::green());
         plans.push_back(actions);
     }
@@ -147,7 +147,9 @@ int main()
     {
         reverse(plans[i].begin(), plans[i].end());
     }
-    map_obj->visualize_path(visualizationPoint, cv::viz::Color::red());
+    map_obj->visualize_path(visualization_point, cv::viz::Color::red());
+
+    map_obj->viz_session();
 // -----------------------Pick Optimal Policy ------------------------
 
     // get_optimal_policy(plans, modes, map_obj.get());
@@ -159,13 +161,14 @@ int main()
     //     std::cout<<actions[i][0]<<" "<<actions[i][1]<<'\n';
     // }
 
-    int optimal_policy_index = get_optimal_policy(plans,modes,map_obj.get());
+    int optimal_policy_index = get_optimal_policy(plans,spawned_modes,map_obj.get());
 // ----------------------- Actual propagation and GMM weight update  ------------------------
-    propagate_policy(plans[optimal_policy_index], groundTruth, modes, map_obj.get());
+    propagate_policy(plans[optimal_policy_index], groundTruth, spawned_modes, map_obj.get(),
+    optimal_policy_index);
     
 // ----------------------- Visualisation  ------------------------
-    map_obj->viz_session(); //  Creating a session for visualisation
-
+    // map_obj->viz_session(); //  Creating a session for visualisation
+    return 0;
 
 
 }
