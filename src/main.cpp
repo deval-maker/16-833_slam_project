@@ -66,7 +66,9 @@ int main()
     std::shared_ptr<Unique_Graph> unq_graph = std::make_shared<Unique_Graph>(map_obj, 1000, 32);
 
     unq_graph->sample_vertices();
-    // unq_graph->viz_graph();
+    unq_graph->viz_graph();
+
+    map_obj->viz_session();
 
 // ------------ Hardcode Modes --------------------------------------------
     Eigen::Vector3f firstmean, secondmean, thirdmean, fourthmean;
@@ -129,7 +131,7 @@ int main()
             node Target = unq_graph->target_state(spawnedNodes[i], spawnedNodes);
             Targets.push_back(Target);
             point_t targetPoint{Target.x, Target.y, Target.theta};
-            map_obj->visualize_point_and_dir(targetPoint, cv::viz::Color::green());
+            // map_obj->visualize_point_and_dir(targetPoint, cv::viz::Color::green());
             visualization_point.push_back(targetPoint);
         }
         std::cout<<"Visualising start and goal points \n";

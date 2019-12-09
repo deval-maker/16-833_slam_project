@@ -77,7 +77,7 @@ MapReader* _map, int index_optimal_policy)
 {
     std::cout<<"[INFO] Propogating modes using Optimal Policy"<<"\n";
     point_t groundTruth_start_state{groundTruth.mean[0], groundTruth.mean[1]};
-    double wt_threshold = 5*pow(10,-2);
+    double wt_threshold = 1*pow(10,-4);
 
 
     _map->clear_session();

@@ -101,7 +101,7 @@ public:
         Omni
     };
 
-    state_vector goal_thresh = state_vector(20, 20, (2*PI)/180.0);
+    state_vector goal_thresh = state_vector(0.9, 0.9, (2*PI)/180.0);
     velocities vel_max_thresh = velocities(15.0, 15.0, 1.5);
     velocities vel_min_thresh = velocities(0.1, 0.1, 0.01);
 
