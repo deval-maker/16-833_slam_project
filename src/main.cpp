@@ -103,7 +103,7 @@ int main()
     // map_obj->viz_session();
 
 // -------------Target state computation ------------------
-    while(spawned_modes.size() > 1)
+    while(spawned_modes.size() >= 1)
     {
         vector<node> spawnedNodes;
         for(int i = 0; i < spawned_modes.size(); i++)
