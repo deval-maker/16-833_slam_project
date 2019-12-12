@@ -1,2 +1,2 @@
-# 16-833_slam_project
+# Motion Planning for Global Localization in Multi Modal Belief Spaces
 SLAM Project
